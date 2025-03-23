@@ -1,14 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import AuthModal from "@/components/AuthModal";
 import { useRouter } from "next/navigation";
+import LandingNav from "@/components/landingnav";
 
 export default function Home() {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalView, setAuthModalView] = useState<'login' | 'signup'>('login');
-  const { user, signOut, loading } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -16,28 +14,6 @@ export default function Home() {
       router.push('/game');
     }
   }, [user, loading, router]);
-
-  const openLoginModal = () => {
-    setAuthModalView('login');
-    setIsAuthModalOpen(true);
-  };
-
-  const openSignupModal = () => {
-    setAuthModalView('signup');
-    setIsAuthModalOpen(true);
-  };
-
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
 
   if (loading) {
     return (
@@ -48,47 +24,29 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold text-gray-800 dark:text-white mb-8">
-          Game 2
+    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
+
+      <LandingNav />
+      
+ 
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-20 text-center">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-800 dark:text-white mb-8">
+          Lutsch Eier
         </h1>
         
-        {user ? (
-          <div className="flex flex-col items-center mt-8">
-            <p className="text-lg mb-4 dark:text-white">
-              Welcome, <span className="font-medium">{user.email}</span>!
-            </p>
-            <button 
-              onClick={handleLogout}
-              className="px-8 py-3 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <button 
-              onClick={openLoginModal}
-              className="px-8 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors"
-            >
-              Login
-            </button>
-            <button 
-              onClick={openSignupModal}
-              className="px-8 py-3 rounded-lg bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-            >
-              Sign Up
-            </button>
-          </div>
-        )}
+  
+        
+        <div className="mt-8 flex justify-center">
+          <img 
+            src="/placeholder-game-image.jpg" 
+            alt="Game 2 Preview" 
+            className="rounded-lg shadow-xl max-w-md w-full opacity-80 hover:opacity-100 transition-opacity duration-300"
+            onError={(e) => e.currentTarget.style.display = 'none'}
+          />
+        </div>
       </main>
+      
 
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={closeAuthModal} 
-        initialView={authModalView} 
-      />
     </div>
   );
 }
