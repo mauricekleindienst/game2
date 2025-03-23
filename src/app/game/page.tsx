@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import UserNavMenu from '@/components/UserNavMenu';
 import CharacterSelection from '@/components/CharacterSelection';
 import Inventory from '@/components/Inventory';
+import GameNav from '@/components/GameNav'
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -29,6 +30,7 @@ export default function GamePage() {
       <UserNavMenu />
       <CharacterSelection />
       <Inventory />
+      <GameNav />
     </div>
   );
 } 
