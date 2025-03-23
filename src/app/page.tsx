@@ -11,7 +11,6 @@ export default function Home() {
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
 
-  // Redirect authenticated users to the game page
   useEffect(() => {
     if (user && !loading) {
       router.push('/game');
@@ -40,7 +39,6 @@ export default function Home() {
     }
   };
 
-  // Show loading spinner while authentication state is loading
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">

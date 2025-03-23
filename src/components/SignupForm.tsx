@@ -28,22 +28,17 @@ export default function SignupForm() {
 
     try {
       await signUp(email, password);
-      
-      // Some auth providers automatically sign in after signup
-      // For others, we need to notify the user to check their email
+
       setSuccess('Sign up successful! You can now log in with your credentials.');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       
-      // After successful signup, try to sign in 
-      // Note: This may not work if email verification is required
+
       try {
         await signIn(email, password);
         router.push('/game');
       } catch (signInErr) {
-        // If auto-login fails, we'll just show the success message
-        // and let the user login manually
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to sign up');
