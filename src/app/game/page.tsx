@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import UserNavMenu from '@/components/UserNavMenu';
 import CharacterSelection from '@/components/CharacterSelection';
+import Inventory from '@/components/Inventory';
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function GamePage() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <UserNavMenu />
       <CharacterSelection />
+      <Inventory />
     </div>
   );
 } 

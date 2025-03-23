@@ -1,6 +1,8 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 type SettingsModalProps = {
   isOpen: boolean;
@@ -8,13 +10,33 @@ type SettingsModalProps = {
 };
 
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { user, signOut, deleteAccount } = useAuth();
+  const router = useRouter();
+
   if (!isOpen) return null;
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Are you sure you want to delete your account?')) {
+      try {
+        setIsDeleting(true);
+        await deleteAccount();
+        await signOut();
+        router.push('/');
+      } catch (error) {
+        console.error('Failed to delete account:', error);
+        alert('Failed to delete account. Please try again.');
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-full items-center justify-center p-4">
         <div 
-          className="fixed inset-0  transition-opacity" 
+          className="fixed inset-0 transition-opacity" 
           onClick={onClose}
         ></div>
         
@@ -37,12 +59,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             
             <div className="mt-6 space-y-4">
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                <p className="text-sm text-gray-500 dark:text-gray-300">
-               Placeholder
-                </p>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting}
+                  className="w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md disabled:opacity-50"
+                >
+                  {isDeleting ? 'Deleting Account...' : 'Delete Account'}
+                </button>
+               
               </div>
-              
-           
               
               <button
                 onClick={onClose}
@@ -56,4 +81,4 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       </div>
     </div>
   );
-} 
+}
