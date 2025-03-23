@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error('Failed to delete account');
       }
 
-      // Clear local user state
+   
       setUser(null);
     } catch (error) {
       console.error('Error deleting account:', error);

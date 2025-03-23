@@ -34,11 +34,12 @@ export default function Home() {
           Lutsch Eier
         </h1>
         
+        
   
         
         <div className="mt-8 flex justify-center">
           <img 
-            src="/placeholder-game-image.jpg" 
+            src="https://i.etsystatic.com/25272370/r/il/e86ea6/3718922102/il_fullxfull.3718922102_11ac.jpg" 
             alt="Game 2 Preview" 
             className="rounded-lg shadow-xl max-w-md w-full opacity-80 hover:opacity-100 transition-opacity duration-300"
             onError={(e) => e.currentTarget.style.display = 'none'}
