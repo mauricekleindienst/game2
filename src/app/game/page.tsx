@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import UserNavMenu from '@/components/UserNavMenu';
-import CharacterSelection from '@/components/characterselection';
+import CharacterSelection from '@/components/CharacterSelection';
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
