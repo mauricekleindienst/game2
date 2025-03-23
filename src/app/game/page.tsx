@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import UserNavMenu from '@/components/UserNavMenu';
-
+import CharacterSelection from '@/components/characterselection';
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -26,6 +26,7 @@ export default function GamePage() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <UserNavMenu />
+      <CharacterSelection />
     </div>
   );
 } 
