@@ -1,62 +1,44 @@
 "use client";
 
-import React, { useState } from 'react';
-import AuthModal from './AuthModal';
+import React from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LandingNav() {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalView, setAuthModalView] = useState<'login' | 'signup'>('login');
+  const router = useRouter();
 
-  const openLoginModal = () => {
-    setAuthModalView('login');
-    setIsAuthModalOpen(true);
-  };
-
-  const openSignupModal = () => {
-    setAuthModalView('signup');
-    setIsAuthModalOpen(true);
-  };
-
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false);
+  const navigateToAuth = (view: 'login' | 'signup') => {
+    router.push(`/auth?view=${view}`);
   };
 
   return (
-    <>
-      <nav className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-          
-            <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-xl font-bold text-gray-800 dark:text-white">
-                Game2
-              </h1>
-            </div>
+    <nav className="bg-[#1a1510] shadow-lg border-b border-amber-900/30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex-shrink-0 flex items-center">
+            <h1 className="text-2xl font-bold text-amber-200 tracking-wide"
+                style={{ fontFamily: 'Cinzel, serif' }}>
+              Game 2
+            </h1>
+          </div>
 
-         
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={openLoginModal}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-white"
-              >
-                Login
-              </button>
-              <button
-                onClick={openSignupModal}
-                className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Sign Up
-              </button>
-            </div>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => navigateToAuth('login')}
+              className="px-4 py-2 text-sm font-medium text-amber-400 hover:text-amber-200 transition-colors"
+              style={{ fontFamily: 'Cinzel, serif' }}
+            >
+              Enter
+            </button>
+            <button
+              onClick={() => navigateToAuth('signup')}
+              className="px-6 py-2 text-sm font-medium bg-amber-900/80 text-amber-200 rounded border border-amber-700 hover:bg-amber-800 transition-colors"
+              style={{ fontFamily: 'Cinzel, serif' }}
+            >
+              Join 
+            </button>
           </div>
         </div>
-      </nav>
-
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={closeAuthModal} 
-        initialView={authModalView} 
-      />
-    </>
+      </div>
+    </nav>
   );
 }
