@@ -7,6 +7,7 @@ import LandingNav from "@/components/landingnav";
 import Footer from "@/components/Footer";
 import Image from "next/image";
 
+
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1510]">
+     
       <LandingNav />
       
       <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-20 text-center relative overflow-hidden">

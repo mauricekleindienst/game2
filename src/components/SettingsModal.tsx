@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useAudio } from '@/context/AudioContext';
 import { useRouter } from 'next/navigation';
 
 type SettingsModalProps = {
@@ -12,7 +13,7 @@ type SettingsModalProps = {
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [soundVolume, setSoundVolume] = useState(70);
-  const [musicVolume, setMusicVolume] = useState(50);
+  const { musicVolume, setMusicVolume } = useAudio();
   const [notifications, setNotifications] = useState(true);
   const { user, signOut, deleteAccount } = useAuth();
   const router = useRouter();

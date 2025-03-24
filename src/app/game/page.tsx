@@ -10,7 +10,7 @@ import Map from '@/components/Map';
 import GameNav, { Location, locations } from '@/components/GameNav';
 import WelcomeModal from '@/components/WelcomeModal';
 import LocationInfo from '@/components/LocationInfo';
-
+import BackgroundMusic from "@/components/BackgroundMusic";
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -61,6 +61,7 @@ export default function GamePage() {
       <div className="flex-1 relative">
         <CharacterSelection />
         <Inventory />
+        <BackgroundMusic />
         <Map 
           selectedLocation={selectedLocation}
           locations={locations}
