@@ -7,13 +7,15 @@ import UserNavMenu from '@/components/UserNavMenu';
 import CharacterSelection from '@/components/CharacterSelection';
 import Inventory from '@/components/Inventory';
 import Map from '@/components/Map';
-import GameNav from '@/components/GameNav';
+import GameNav, { Location, locations } from '@/components/GameNav';
 import WelcomeModal from '@/components/WelcomeModal';
+import LocationInfo from '@/components/LocationInfo';
 
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [showWelcome, setShowWelcome] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   
   useEffect(() => {
     if (!loading && !user) {
@@ -37,6 +39,10 @@ export default function GamePage() {
     setShowWelcome(false);
   };
 
+  const handleLocationSelect = (location: Location | null) => {
+    setSelectedLocation(location);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -46,12 +52,22 @@ export default function GamePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
       <UserNavMenu />
-      <CharacterSelection />
-      <Inventory />
-      <Map />
-      <GameNav />
+      <GameNav 
+        selectedLocationId={selectedLocation?.id}
+        onLocationSelect={handleLocationSelect}
+      />
+      <div className="flex-1 relative">
+        <CharacterSelection />
+        <Inventory />
+        <Map 
+          selectedLocation={selectedLocation}
+          locations={locations}
+          onLocationSelect={handleLocationSelect}
+        />
+        <LocationInfo selectedLocation={selectedLocation} />
+      </div>
       <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />
     </div>
   );
