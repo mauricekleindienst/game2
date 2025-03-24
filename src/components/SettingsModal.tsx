@@ -35,7 +35,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   return (
     <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
       w-96 bg-amber-100 rounded-lg shadow-xl p-4 border-2 border-amber-700
-      animate-fadeIn z-50">
+        z-50">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-amber-900 font-bold text-xl">Settings</h2>
         <button

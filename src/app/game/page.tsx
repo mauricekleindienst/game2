@@ -1,21 +1,41 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import UserNavMenu from '@/components/UserNavMenu';
 import CharacterSelection from '@/components/CharacterSelection';
 import Inventory from '@/components/Inventory';
 import Map from '@/components/Map';
+import GameNav from '@/components/GameNav';
+import WelcomeModal from '@/components/WelcomeModal';
+
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [showWelcome, setShowWelcome] = useState(false);
   
   useEffect(() => {
     if (!loading && !user) {
       router.push('/');
     }
   }, [user, loading, router]);
+
+  useEffect(() => {
+    if (user) {
+      const hasSeenWelcome = localStorage.getItem(`welcome_seen_${user.id}`);
+      if (!hasSeenWelcome) {
+        setShowWelcome(true);
+      }
+    }
+  }, [user]);
+
+  const handleCloseWelcome = () => {
+    if (user) {
+      localStorage.setItem(`welcome_seen_${user.id}`, 'true');
+    }
+    setShowWelcome(false);
+  };
 
   if (loading) {
     return (
@@ -30,6 +50,9 @@ export default function GamePage() {
       <UserNavMenu />
       <CharacterSelection />
       <Inventory />
+      <Map />
+      <GameNav />
+      <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />
     </div>
   );
 } 
