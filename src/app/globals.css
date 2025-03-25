@@ -2,7 +2,13 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #090909;
+  --theme-bg: #fef2f2;
+  --theme-light-bg: #fee2e2;
+  --theme-dark-bg: #7f1d1d;
+  --theme-accent: #ef4444;
+  --theme-text: #b91c1c;
+  --theme-dark-text: #fecaca;
 }
 
 @theme inline {

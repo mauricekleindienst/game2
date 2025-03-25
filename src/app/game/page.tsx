@@ -9,13 +9,17 @@ import Inventory from '@/components/Inventory';
 import Map from '@/components/Map';
 import GameNav, { Location, locations } from '@/components/GameNav';
 import WelcomeModal from '@/components/WelcomeModal';
-import LocationInfo from '@/components/LocationInfo';
+
 import BackgroundMusic from "@/components/BackgroundMusic";
+import FishingDock from '@/components/FishingDock';
+import { getTheme } from '@/lib/theme';
+
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [themeColor, setThemeColor] = useState('red');
   
   useEffect(() => {
     if (!loading && !user) {
@@ -43,6 +47,21 @@ export default function GamePage() {
     setSelectedLocation(location);
   };
 
+  const handleCharacterSelect = (character: {id: number, color: string}) => {
+    setThemeColor(character.color);
+  };
+
+  const renderLocationComponent = () => {
+    if (!selectedLocation) return null;
+    
+    switch (selectedLocation.id) {
+      case 0: 
+        return <FishingDock />;
+      default:
+        return null;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -52,22 +71,30 @@ export default function GamePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
+    <div style={{backgroundColor: 'var(--theme-bg)'}} 
+         className="min-h-screen flex flex-col transition-colors duration-500">
       <UserNavMenu />
+     
       <GameNav 
         selectedLocationId={selectedLocation?.id}
         onLocationSelect={handleLocationSelect}
       />
       <div className="flex-1 relative">
-        <CharacterSelection />
+        <CharacterSelection onCharacterSelect={handleCharacterSelect} />
         <Inventory />
+        
+        {selectedLocation ? (
+          renderLocationComponent()
+        ) : (
+          <Map 
+            selectedLocation={selectedLocation}
+            locations={locations}
+            onLocationSelect={handleLocationSelect}
+          />
+        )}
+        
         <BackgroundMusic />
-        <Map 
-          selectedLocation={selectedLocation}
-          locations={locations}
-          onLocationSelect={handleLocationSelect}
-        />
-        <LocationInfo selectedLocation={selectedLocation} />
+   
       </div>
       <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />
     </div>
