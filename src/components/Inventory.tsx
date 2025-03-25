@@ -1,12 +1,25 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GiSchoolBag, GiFishBucket  } from 'react-icons/gi';
 import Storage from '@/components/Storage';
 
 export default function Inventory() {
   const [isOpen, setIsOpen] = useState(false);
   const [isStorageOpen, setIsStorageOpen] = useState(false);
+  const [inventory, setInventory] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/inventory")
+      .then(res => {
+        if (!res.ok) throw new Error("Fehler beim Laden des Inventars");
+        return res.json();
+      })
+      .then(data => setInventory(data.inventory))
+      .catch(err => setError(err.message));
+  }, []);
+
 
   return (
     <>

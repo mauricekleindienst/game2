@@ -1,0 +1,398 @@
+{
+    "1": {
+        "total_xp": 0,
+        "difference": 0
+    },
+    "2": {
+        "total_xp": 83,
+        "difference": 83
+    },
+    "3": {
+        "total_xp": 175,
+        "difference": 92
+    },
+    "4": {
+        "total_xp": 277,
+        "difference": 102
+    },
+    "5": {
+        "total_xp": 389,
+        "difference": 112
+    },
+    "6": {
+        "total_xp": 513,
+        "difference": 124
+    },
+    "7": {
+        "total_xp": 651,
+        "difference": 138
+    },
+    "8": {
+        "total_xp": 803,
+        "difference": 152
+    },
+    "9": {
+        "total_xp": 970,
+        "difference": 167
+    },
+    "10": {
+        "total_xp": 1155,
+        "difference": 185
+    },
+    "11": {
+        "total_xp": 1360,
+        "difference": 205
+    },
+    "12": {
+        "total_xp": 1585,
+        "difference": 225
+    },
+    "13": {
+        "total_xp": 1834,
+        "difference": 249
+    },
+    "14": {
+        "total_xp": 2109,
+        "difference": 275
+    },
+    "15": {
+        "total_xp": 2413,
+        "difference": 304
+    },
+    "16": {
+        "total_xp": 2748,
+        "difference": 335
+    },
+    "17": {
+        "total_xp": 3118,
+        "difference": 370
+    },
+    "18": {
+        "total_xp": 3526,
+        "difference": 408
+    },
+    "19": {
+        "total_xp": 3976,
+        "difference": 450
+    },
+    "20": {
+        "total_xp": 4473,
+        "difference": 497
+    },
+    "21": {
+        "total_xp": 5021,
+        "difference": 548
+    },
+    "22": {
+        "total_xp": 5626,
+        "difference": 605
+    },
+    "23": {
+        "total_xp": 6294,
+        "difference": 668
+    },
+    "24": {
+        "total_xp": 7032,
+        "difference": 738
+    },
+    "25": {
+        "total_xp": 7845,
+        "difference": 813
+    },
+    "26": {
+        "total_xp": 8743,
+        "difference": 898
+    },
+    "27": {
+        "total_xp": 9734,
+        "difference": 991
+    },
+    "28": {
+        "total_xp": 10828,
+        "difference": 1094
+    },
+    "29": {
+        "total_xp": 12035,
+        "difference": 1207
+    },
+    "30": {
+        "total_xp": 13367,
+        "difference": 1332
+    },
+    "31": {
+        "total_xp": 14837,
+        "difference": 1470
+    },
+    "32": {
+        "total_xp": 16460,
+        "difference": 1623
+    },
+    "33": {
+        "total_xp": 18251,
+        "difference": 1791
+    },
+    "34": {
+        "total_xp": 20228,
+        "difference": 1977
+    },
+    "35": {
+        "total_xp": 22410,
+        "difference": 2182
+    },
+    "36": {
+        "total_xp": 24819,
+        "difference": 2409
+    },
+    "37": {
+        "total_xp": 27478,
+        "difference": 2659
+    },
+    "38": {
+        "total_xp": 30413,
+        "difference": 2935
+    },
+    "39": {
+        "total_xp": 33652,
+        "difference": 3239
+    },
+    "40": {
+        "total_xp": 37229,
+        "difference": 3577
+    },
+    "41": {
+        "total_xp": 41176,
+        "difference": 3947
+    },
+    "42": {
+        "total_xp": 45534,
+        "difference": 4358
+    },
+    "43": {
+        "total_xp": 50344,
+        "difference": 4810
+    },
+    "44": {
+        "total_xp": 55655,
+        "difference": 5311
+    },
+    "45": {
+        "total_xp": 61517,
+        "difference": 5862
+    },
+    "46": {
+        "total_xp": 67989,
+        "difference": 6472
+    },
+    "47": {
+        "total_xp": 75133,
+        "difference": 7144
+    },
+    "48": {
+        "total_xp": 83020,
+        "difference": 7887
+    },
+    "49": {
+        "total_xp": 91727,
+        "difference": 8707
+    },
+    "50": {
+        "total_xp": 101339,
+        "difference": 9612
+    },
+    "51": {
+        "total_xp": 111951,
+        "difference": 10612
+    },
+    "52": {
+        "total_xp": 123666,
+        "difference": 11715
+    },
+    "53": {
+        "total_xp": 136600,
+        "difference": 12934
+    },
+    "54": {
+        "total_xp": 150879,
+        "difference": 14279
+    },
+    "55": {
+        "total_xp": 166642,
+        "difference": 15763
+    },
+    "56": {
+        "total_xp": 184046,
+        "difference": 17404
+    },
+    "57": {
+        "total_xp": 203260,
+        "difference": 19214
+    },
+    "58": {
+        "total_xp": 224473,
+        "difference": 21213
+    },
+    "59": {
+        "total_xp": 247892,
+        "difference": 23419
+    },
+    "60": {
+        "total_xp": 273748,
+        "difference": 25856
+    },
+    "61": {
+        "total_xp": 302295,
+        "difference": 28547
+    },
+    "62": {
+        "total_xp": 333811,
+        "difference": 31516
+    },
+    "63": {
+        "total_xp": 368606,
+        "difference": 34795
+    },
+    "64": {
+        "total_xp": 407022,
+        "difference": 38416
+    },
+    "65": {
+        "total_xp": 449435,
+        "difference": 42413
+    },
+    "66": {
+        "total_xp": 496261,
+        "difference": 46826
+    },
+    "67": {
+        "total_xp": 547960,
+        "difference": 51699
+    },
+    "68": {
+        "total_xp": 605039,
+        "difference": 57079
+    },
+    "69": {
+        "total_xp": 668058,
+        "difference": 63019
+    },
+    "70": {
+        "total_xp": 737635,
+        "difference": 69577
+    },
+    "71": {
+        "total_xp": 814452,
+        "difference": 76817
+    },
+    "72": {
+        "total_xp": 899264,
+        "difference": 84812
+    },
+    "73": {
+        "total_xp": 992902,
+        "difference": 93638
+    },
+    "74": {
+        "total_xp": 1096286,
+        "difference": 103384
+    },
+    "75": {
+        "total_xp": 1210429,
+        "difference": 114143
+    },
+    "76": {
+        "total_xp": 1336451,
+        "difference": 126022
+    },
+    "77": {
+        "total_xp": 1475589,
+        "difference": 139138
+    },
+    "78": {
+        "total_xp": 1629208,
+        "difference": 153619
+    },
+    "79": {
+        "total_xp": 1798816,
+        "difference": 169608
+    },
+    "80": {
+        "total_xp": 1986076,
+        "difference": 187260
+    },
+    "81": {
+        "total_xp": 2192826,
+        "difference": 206750
+    },
+    "82": {
+        "total_xp": 2421095,
+        "difference": 228269
+    },
+    "83": {
+        "total_xp": 2673123,
+        "difference": 252028
+    },
+    "84": {
+        "total_xp": 2951382,
+        "difference": 278259
+    },
+    "85": {
+        "total_xp": 3258603,
+        "difference": 307221
+    },
+    "86": {
+        "total_xp": 3597800,
+        "difference": 339197
+    },
+    "87": {
+        "total_xp": 3972303,
+        "difference": 374503
+    },
+    "88": {
+        "total_xp": 4385785,
+        "difference": 413482
+    },
+    "89": {
+        "total_xp": 4842305,
+        "difference": 456520
+    },
+    "90": {
+        "total_xp": 5346341,
+        "difference": 504036
+    },
+    "91": {
+        "total_xp": 5902840,
+        "difference": 556499
+    },
+    "92": {
+        "total_xp": 6517263,
+        "difference": 614423
+    },
+    "93": {
+        "total_xp": 7195638,
+        "difference": 678375
+    },
+    "94": {
+        "total_xp": 7944624,
+        "difference": 748986
+    },
+    "95": {
+        "total_xp": 8771568,
+        "difference": 826944
+    },
+    "96": {
+        "total_xp": 9684587,
+        "difference": 913019
+    },
+    "97": {
+        "total_xp": 10692639,
+        "difference": 1008052
+    },
+    "98": {
+        "total_xp": 11805616,
+        "difference": 1112977
+    },
+    "99": {
+        "total_xp": 13034441,
+        "difference": 1228825
+    }
+}
