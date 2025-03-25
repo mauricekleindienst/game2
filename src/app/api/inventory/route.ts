@@ -1,9 +1,10 @@
-import { createClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase_server';
+import { getInventoryForUser } from '@/lib/inventory';
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
   try {
-    const supabase = createClient();
+    const supabase = await createServerSupabaseClient();
 
     const { 
         data: { user } } = await supabase.auth.getUser();
@@ -12,14 +13,9 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Nicht eingeloggt" }, { status: 401 });
     }
 
-    const { data, error } = await supabase
-      .from('inventory')
-      .select('*')
-      .eq('user_id', user.id);
+    const inventory = await getInventoryForUser(user.id);
 
-    if (error) throw error;
-
-    return NextResponse.json({ inventory: data });
+    return NextResponse.json({ inventory });
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Unknown error' },

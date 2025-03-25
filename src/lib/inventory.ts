@@ -7,37 +7,56 @@ export interface InventoryItem {
     item_id: string;
     slot: number;
     quantity: number;
-    item_data?: any;
-
-
+    item_data?: {
+        id: string;
+        name: string;
+        req_level?: number;
+        [key: string]: any;
+    };
+    fetch_error?: string | null;
 }
 
-export const getInventoryForUser = async (userId: string) => {
+
+export const getInventoryForUser = async (userId: string): Promise<InventoryItem[]> => {
     const supabase = createClient();
+    
     const { data: inventory, error } = await supabase
       .from('inventory')
       .select('*')
       .eq('user_id', userId);
-
-    if (error) throw new Error(error.message);
-    if (!inventory) return [];
-
-    const itemPromises = inventory.map(async (invItem) => {
+      
+    if (error) {
+        throw new Error(error.message);
+    }
+    
+    if (!inventory || inventory.length === 0) {
+        return [];
+    }
+    
+    const itemPromises = inventory.map(async (invItem): Promise<InventoryItem> => {
         let itemData = null;
-
-        if (invItem.item_type === 'fish') {
-            const { data } = await supabase.from('fish').select('*').eq('id', invItem.item_id).single();
-            itemData = data;
-          } else if (invItem.item_type === 'tool') {
-            const { data } = await supabase.from('tools').select('*').eq('id', invItem.item_id).single();
-            itemData = data;
-          } else if (invItem.item_type === 'resource') {
-            const { data } = await supabase.from('resources').select('*').eq('id', invItem.item_id).single();
-            itemData = data;
-          }
-
-        return { ...invItem, item_data: itemData };
+        
+        try {
+            const tableName = invItem.item_type;
+            
+            const { data, error } = await supabase
+                .from(tableName)
+                .select('*')
+                .eq('id', invItem.item_id)
+                .single();
+                
+            if (!error && data) {
+                itemData = data;
+            }
+        } catch (error) {
+        }
+        
+        return { 
+            ...invItem, 
+            item_data: itemData
+        } as InventoryItem;
     });
-
-    return await Promise.all(itemPromises);
+    
+    const result = await Promise.all(itemPromises);
+    return result;
 };

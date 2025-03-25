@@ -49,7 +49,7 @@ export default function Home() {
             className="px-8 py-3 text-lg font-medium bg-amber-900/80 text-amber-200 rounded-lg border border-amber-700 hover:bg-amber-800 transition-colors shadow-xl"
             style={{ fontFamily: 'Cinzel, serif' }}
           >
-            Join
+            Signup
           </button>
         </div>
        

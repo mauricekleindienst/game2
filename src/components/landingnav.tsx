@@ -27,14 +27,14 @@ export default function LandingNav() {
               className="px-4 py-2 text-sm font-medium text-amber-400 hover:text-amber-200 transition-colors"
               style={{ fontFamily: 'Cinzel, serif' }}
             >
-              Enter
+              Login
             </button>
             <button
               onClick={() => navigateToAuth('signup')}
               className="px-6 py-2 text-sm font-medium bg-amber-900/80 text-amber-200 rounded border border-amber-700 hover:bg-amber-800 transition-colors"
               style={{ fontFamily: 'Cinzel, serif' }}
             >
-              Join 
+              Signup 
             </button>
           </div>
         </div>

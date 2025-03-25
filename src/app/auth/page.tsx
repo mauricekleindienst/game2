@@ -52,7 +52,7 @@ export default function AuthPage() {
                 style={{ fontFamily: 'Cinzel, serif' }}
                 onClick={() => setActiveView('login')}
               >
-                Enter
+                Login
               </button>
               <button
                 className={`flex-1 px-6 py-4 text-base font-medieval transition-colors ${
@@ -63,7 +63,7 @@ export default function AuthPage() {
                 style={{ fontFamily: 'Cinzel, serif' }}
                 onClick={() => setActiveView('signup')}
               >
-                Join
+                Signup
               </button>
             </div>
 
