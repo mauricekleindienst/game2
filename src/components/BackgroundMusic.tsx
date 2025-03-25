@@ -14,7 +14,7 @@ export default function BackgroundMusic() {
   }, [musicVolume]);
 
   useEffect(() => {
-    const audio = new Audio('https://lofistudy.fra1.cdn.digitaloceanspaces.com/Playlist/Background%20music_test.webm');
+    const audio = new Audio('https://lofistudy.fra1.cdn.digitaloceanspaces.com/Playlist/Background%20music.webm');
     audio.loop = true;
     audioRef.current = audio;
 
