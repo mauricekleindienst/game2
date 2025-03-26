@@ -6,7 +6,7 @@
  */
 export async function getCharacterLevel(characterId: string, skill: string) {
   try {
-    const response = await fetch(`/api/get_characters`); // Keine Base-URL nötig
+    const response = await fetch(`/api/get_characters`);
     if (!response.ok) throw new Error(`Fehler: ${response.status}`);
 
     const data = await response.json();
@@ -28,6 +28,41 @@ export async function getCharacterLevel(characterId: string, skill: string) {
     console.error('Fehler in getCharacterSkill:', err);
     return null;
   }
+}
+
+export async function getCharacterIds(): Promise<string[]> {
+  try {
+    const response = await fetch("/api/get_characters");
+    if (!response.ok) throw new Error(`Fehler: ${response.status}`);
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Failed to fetch characters");
+    }
+
+    return data.characters.map((char: { id: string }) => char.id);
+  } catch (error) {
+    console.error("Error fetching character IDs:", error);
+    return [];
+  }
+}
+export async function getCharacterName(characterId:string) {
+  try {
+    const response = await fetch(`/api/get_characters`);
+    const data = await response.json();
+    
+    if (!data.success || !data.characters) {
+      throw new Error('Fehler beim Abrufen der Charakterdaten');
+    }
+    const character = data.characters.find((char: any) => char.id === characterId);
+    if (!character) throw new Error('Charakter nicht gefunden');
+    return character.name;
+  }
+  catch (err) {
+  console.error('Fehler in getCharacterName:', err);
+  return null;
+}
 }
 
 
@@ -105,6 +140,31 @@ export async function setCharacterImageUrl(character_id: string, newImageUrl: st
   }
 }
 
+
+export async function setCharacterColor(character_id: string, newColor: string) {
+  try {
+    const response = await fetch("/api/update_character", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: character_id,
+        color: newColor,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      return { success: true, message: "Character Color updated successfully!" };
+    } else {
+      return { success: false, error: result.error || "Failed to update character Color" };
+    }
+  } catch (error) {
+    return { success: false, error: "An error occurred while updating the Color" };
+  }
+}
 export async function increaseCharacterExp(character_id: string,skill: string,value:number ) {
 
   const currentLevel = await getCharacterLevel(character_id,skill);

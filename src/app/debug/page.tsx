@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import { setCharacterName, setCharacterLocation, increaseCharacterExp } from "@/utils/character_util";
+import { setCharacterName, setCharacterLocation, increaseCharacterExp, getCharacterIds } from "@/utils/character_util";
 
 const DebugPage = () => {
   const [characterId, setCharacterId] = useState("");
@@ -9,6 +9,7 @@ const DebugPage = () => {
   const [skill, setSkill] = useState("");
   const [expValue, setExpValue] = useState<number>(0);
   const [resultMessage, setResultMessage] = useState("");
+  const [characterIds, setCharacterIds] = useState<string[]>([]);
 
   // Handle Name Update
   const updateName = async () => {
@@ -26,6 +27,12 @@ const DebugPage = () => {
   const increaseSkillExp = async () => {
     const result = await increaseCharacterExp(characterId, skill, expValue);
     setResultMessage(result.success ? result.message : result.error);
+  };
+
+  // Fetch Character IDs
+  const fetchCharacterIds = async () => {
+    const ids = await getCharacterIds();
+    setCharacterIds(ids);
   };
 
   return (
@@ -75,6 +82,15 @@ const DebugPage = () => {
           placeholder="Enter XP increase"
         />
         <button onClick={increaseSkillExp}>Increase XP</button>
+      </div>
+      <div>
+        <h2>Fetch Character IDs</h2>
+        <button onClick={fetchCharacterIds}>Get Character IDs</button>
+        <ul>
+          {characterIds.map((id) => (
+            <li key={id}>{id}</li>
+          ))}
+        </ul>
       </div>
       <div style={{ marginTop: "20px", color: "green" }}>
         <h3>{resultMessage}</h3>
