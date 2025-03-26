@@ -1,36 +1,84 @@
-"use client";
-
-import React, { useState } from 'react';
-import { increaseFishingLevel } from '@/utils/character_util';
+"use client"
+import { useState } from "react";
+import { setCharacterName, setCharacterLocation, increaseCharacterExp } from "@/utils/character_util";
 
 const DebugPage = () => {
-  const [characterId, setCharacterId] = useState('a1ee6970-51b3-42cd-b7f5-2a00a2965a61'); // Replace with your character ID
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [characterId, setCharacterId] = useState("");
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
+  const [skill, setSkill] = useState("");
+  const [expValue, setExpValue] = useState<number>(0);
+  const [resultMessage, setResultMessage] = useState("");
 
-  const handleIncreaseFishingLevel = async () => {
-    try {
-      const updatedLevel = await increaseFishingLevel(characterId, 1);
-      setSuccess(`Fishing level updated successfully: ${updatedLevel}`);
-      setError(null);
-    } catch (err) {
-      
-      setSuccess(null);
-    }
+  // Handle Name Update
+  const updateName = async () => {
+    const result = await setCharacterName(characterId, name);
+    setResultMessage(result.success ? result.message : result.error);
+  };
+
+  // Handle Location Update
+  const updateLocation = async () => {
+    const result = await setCharacterLocation(characterId, location);
+    setResultMessage(result.success ? result.message : result.error);
+  };
+
+  // Handle Skill XP Increase
+  const increaseSkillExp = async () => {
+    const result = await increaseCharacterExp(characterId, skill, expValue);
+    setResultMessage(result.success ? result.message : result.error);
   };
 
   return (
-    <div>
-      <h1>Debug Page</h1>
-      <input
-        type="text"
-        placeholder="Enter Character ID"
-        value={characterId}
-        onChange={(e) => setCharacterId(e.target.value)}
-      />
-      <button onClick={handleIncreaseFishingLevel}>Increase Fishing Level by 1</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+    <div style={{ padding: "20px" }}>
+      <h1>Character Debug Page</h1>
+      <div>
+        <label>Character ID:</label>
+        <input
+          type="text"
+          value={characterId}
+          onChange={(e) => setCharacterId(e.target.value)}
+          placeholder="Enter character ID"
+        />
+      </div>
+      <div>
+        <h2>Update Name</h2>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter new name"
+        />
+        <button onClick={updateName}>Update Name</button>
+      </div>
+      <div>
+        <h2>Update Location</h2>
+        <input
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Enter new location"
+        />
+        <button onClick={updateLocation}>Update Location</button>
+      </div>
+      <div>
+        <h2>Increase Skill XP</h2>
+        <input
+          type="text"
+          value={skill}
+          onChange={(e) => setSkill(e.target.value)}
+          placeholder="Enter skill (e.g. mining, fishing)"
+        />
+        <input
+          type="number"
+          value={expValue}
+          onChange={(e) => setExpValue(Number(e.target.value))}
+          placeholder="Enter XP increase"
+        />
+        <button onClick={increaseSkillExp}>Increase XP</button>
+      </div>
+      <div style={{ marginTop: "20px", color: "green" }}>
+        <h3>{resultMessage}</h3>
+      </div>
     </div>
   );
 };
