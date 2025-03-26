@@ -178,10 +178,18 @@ export default function Inventory() {
       </button>
 
       {isOpen && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-228 h-160 bg-amber-100 rounded-lg shadow-xl p-6 border-2 border-amber-700 overflow-y-auto z-[1000]">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[900px] max-h-[80vh] bg-amber-100 rounded-lg shadow-xl p-6 border-2 border-amber-700 z-[1000] flex flex-col">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-amber-900 font-bold text-xl">Inventory</h2>
-          
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-amber-900 hover:text-amber-700 transition-colors"
+              aria-label="Close inventory"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
           
           {loading ? (
@@ -193,27 +201,26 @@ export default function Inventory() {
               <p className="text-lg">{error}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-10 gap-4 p-2">
-              {inventory.length > 0 ? (
-                inventory.map((item, i) => (
-                  <div key={i} className="w-20 h-20 bg-amber-200 rounded-lg border-2 border-amber-600 relative flex flex-col items-center justify-center group hover:bg-amber-300 hover:border-amber-700 transition-colors shadow-md">
-                    <ItemIcon itemType={item.item_type} />
-                    <span className="absolute bottom-0 left-0 bg-amber-700 text-amber-100 text-sm px-2 py-0.5 rounded-br rounded-tl font-medium">
-                      {item.quantity || 1}
-                    </span>
-                    
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-gray-800 text-white text-sm rounded-md p-2 w-max opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
-                      <span className="font-bold">
+            <div className="overflow-y-auto flex-grow pr-2 custom-scrollbar">
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3 p-2 pb-4">
+                {inventory.length > 0 ? (
+                  inventory.map((item, i) => (
+                    <div key={i} className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 bg-amber-200 rounded-lg border-2 border-amber-600 relative flex flex-col items-center justify-between pt-5 pb-2 group hover:bg-amber-300 hover:border-amber-700 transition-colors shadow-md">
+                      <div className="absolute top-0 left-0 right-0 text-center text-[10px] font-semibold truncate px-1 bg-amber-100/90 rounded-t border-b border-amber-300 text-amber-800">
                         {item.item_data?.name || `${item.item_type}`}
+                      </div>
+                      <ItemIcon itemType={item.item_type} />
+                      <span className="absolute bottom-0 left-0 bg-amber-700 text-amber-100 text-sm px-2 py-0.5 rounded-br rounded-tl font-medium">
+                        {item.quantity || 1}
                       </span>
                     </div>
-                  </div>
-                ))
-              ) : (
-                [...Array(64)].map((_, i) => (
-                  <div key={i} className="w-20 h-20 bg-amber-200 rounded-lg border-2 border-amber-600 shadow-md" />
-                ))
-              )}
+                  ))
+                ) : (
+                  [...Array(64)].map((_, i) => (
+                    <div key={i} className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 bg-amber-200 rounded-lg border-2 border-amber-600 shadow-md opacity-70" />
+                  ))
+                )}
+              </div>
             </div>
           )}
         </div>

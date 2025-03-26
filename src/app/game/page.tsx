@@ -9,17 +9,16 @@ import Inventory from '@/components/Inventory';
 import Map from '@/components/Map';
 import GameNav, { Location, locations } from '@/components/GameNav';
 import WelcomeModal from '@/components/WelcomeModal';
+import Image from 'next/image';
 
 import BackgroundMusic from "@/components/BackgroundMusic";
 import FishingDock from '@/components/FishingDock';
-import { getTheme } from '@/lib/theme';
 
 export default function GamePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const [themeColor, setThemeColor] = useState('red');
   
   useEffect(() => {
     if (!loading && !user) {
@@ -48,7 +47,8 @@ export default function GamePage() {
   };
 
   const handleCharacterSelect = (character: {id: number, color: string}) => {
-    setThemeColor(character.color);
+    // Character selection now only affects the theme styling for components,
+    // but not the page background
   };
 
   const renderLocationComponent = () => {
@@ -62,6 +62,20 @@ export default function GamePage() {
     }
   };
 
+  const getBackgroundImage = (): string => {
+    if (!selectedLocation) return '/map-bg.jpg';
+    
+    switch (selectedLocation.id) {
+      case 0: return '/fishing-bg.jpg';
+      case 1: return '/woodcutting-bg.jpg';
+      case 2: return '/cooking-bg.jpg';
+      case 3: return '/village-bg.jpg';
+      case 4: return '/mining-bg.jpg';
+      case 5: return '/forest-bg.jpg';
+      default: return '/map-bg.jpg';
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -71,30 +85,42 @@ export default function GamePage() {
   }
 
   return (
-    <div style={{backgroundColor: 'var(--theme-bg)'}} 
-         className="min-h-screen flex flex-col transition-colors duration-500">
-      <UserNavMenu />
-     
-      <GameNav 
-        selectedLocationId={selectedLocation?.id}
-        onLocationSelect={handleLocationSelect}
-      />
-      <div className="flex-1 relative">
-        <CharacterSelection onCharacterSelect={handleCharacterSelect} />
-        <Inventory />
-        
-        {selectedLocation ? (
-          renderLocationComponent()
-        ) : (
-          <Map 
-            selectedLocation={selectedLocation}
-            locations={locations}
-            onLocationSelect={handleLocationSelect}
-          />
-        )}
-        
-        <BackgroundMusic />
-   
+    <div className="min-h-screen flex flex-col bg-gray-900 relative">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0 transition-opacity duration-1000">
+        <Image
+          src={getBackgroundImage()}
+          alt={selectedLocation?.name || "Game world"}
+          fill
+          className="object-cover opacity-70"
+          priority
+        />
+      </div>
+      
+      {/* Content */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <UserNavMenu />
+       
+        <GameNav 
+          selectedLocationId={selectedLocation?.id}
+          onLocationSelect={handleLocationSelect}
+        />
+        <div className="flex-1 relative">
+          <CharacterSelection onCharacterSelect={handleCharacterSelect} />
+          <Inventory />
+          
+          {selectedLocation ? (
+            renderLocationComponent()
+          ) : (
+            <Map 
+              selectedLocation={selectedLocation}
+              locations={locations}
+              onLocationSelect={handleLocationSelect}
+            />
+          )}
+          
+          <BackgroundMusic />
+        </div>
       </div>
       <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />
     </div>

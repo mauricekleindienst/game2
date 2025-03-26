@@ -37,7 +37,7 @@ export default function UserNavMenu() {
 
   return (
     <>
-      <div className="fixed top-8 right-8 z-50" ref={dropdownRef}>
+      <div className="fixed top-8 right-8 z-100" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600
