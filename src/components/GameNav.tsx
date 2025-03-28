@@ -71,6 +71,23 @@ export const locations: Location[] = [
 
 export default function LocationSelection({ onLocationSelect, selectedLocationId }: LocationSelectProps) {
   const [themeColor, setThemeColor] = useState<ThemeColor>('red');
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  
+  // Check if we're on mobile on mount and when window resizes
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    // Initial check
+    checkIfMobile();
+    
+    // Add event listener for resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
   
   // Get the current theme on mount and when it changes
   useEffect(() => {
@@ -141,33 +158,39 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
   };
 
   return (
-    <nav className={`fixed top-4 left-0 right-0 z-50 shadow-lg rounded-xl mx-auto my-4 max-w-4xl overflow-hidden ${getNavBackgroundColor()} border-2 ${getBorderColor()} transition-all duration-300`}>
-      <div className="px-4 py-5">
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 justify-items-center">
+    <nav className={`fixed top-2 sm:top-4 left-0 right-0 z-50 shadow-lg rounded-xl mx-auto my-2 sm:my-4 max-w-[95%] sm:max-w-4xl overflow-hidden ${getNavBackgroundColor()} border ${getBorderColor()} transition-all duration-300`}>
+      <div className="px-2 sm:px-4 py-3 sm:py-5">
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 sm:gap-4 justify-items-center">
           {locations.map((location) => (
             <div key={location.id} className="flex flex-col items-center w-full">
               <button
                 onClick={() => handleLocationSelect(location)}
                 className={`
-                  w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br ${location.gradient} 
+                  w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${location.gradient} 
                   hover:scale-110 active:scale-95 transition-all duration-300 
                   shadow-md hover:shadow-xl
                   flex items-center justify-center
+                  touch-action-manipulation
                   ${selectedLocationId === location.id 
-                    ? `ring-3 ring-offset-2 ${getRingColorClass(true)} dark:ring-offset-gray-800 scale-105` 
-                    : `ring-2 ring-offset-1 ${getRingColorClass(false)} dark:ring-offset-gray-800`
+                    ? `ring-2 sm:ring-3 ring-offset-1 sm:ring-offset-2 ${getRingColorClass(true)} dark:ring-offset-gray-800 scale-105` 
+                    : `ring-1 sm:ring-2 ring-offset-1 ${getRingColorClass(false)} dark:ring-offset-gray-800`
                   }
                 `}
                 aria-label={`Go to ${location.name}`}
               >
-                {location.icon}
+                {React.cloneElement(location.icon, {
+                  className: "w-5 h-5 sm:w-6 sm:h-6 text-white"
+                })}
               </button>
-              <span className={`mt-2 text-xs sm:text-sm font-medium text-center truncate w-full ${
+              <span className={`mt-1 sm:mt-2 text-xs sm:text-sm font-medium text-center truncate w-full ${
                 selectedLocationId === location.id 
                   ? getSelectedTextColor()
                   : "text-gray-700 dark:text-gray-300"
               }`}>
-                {location.name}
+                {isMobile
+                  ? location.name.split(' ')[0] // Show only first word on mobile
+                  : location.name
+                }
               </span>
             </div>
           ))}
