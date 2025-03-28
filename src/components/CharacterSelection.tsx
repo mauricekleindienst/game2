@@ -5,7 +5,7 @@ import { GiFishingPole, GiAxeInStump, GiVillage, GiCookingPot } from 'react-icon
 import { FiEdit3, FiX } from 'react-icons/fi';
 import Image from 'next/image';
 import { setTheme, themes, ThemeColor, Theme } from '@/lib/theme';
-
+import {getCharacterIds,getCharacterName} from '@/utils/character_util'
 interface CharacterSelectionProps {
   onCharacterSelect?: (character: {id: number, color: string}) => void;
 }
@@ -18,6 +18,11 @@ interface Character {
   imageSrc: string;
 }
 
+const characterids = await getCharacterIds();
+const name1 = await getCharacterName(characterids[0]);
+const name2 = await getCharacterName(characterids[1]);
+const name3 = await getCharacterName(characterids[2]);
+const name4 = await getCharacterName(characterids[3]);
 export default function CharacterSelection({ onCharacterSelect }: CharacterSelectionProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<number | null>(null);
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
@@ -27,10 +32,10 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
   const [characterThemeColor, setCharacterThemeColor] = useState<ThemeColor>('red');
   const [characterImageUrl, setCharacterImageUrl] = useState('');
   const [characters, setCharacters] = useState<Character[]>([
-    { id: 0, name: "Markus", icon: <GiFishingPole className="w-6 h-6 text-red-500" />, theme: themes[0], imageSrc: "/fisherman.jpg" },
-    { id: 1, name: "Tobi", icon: <GiAxeInStump className="w-6 h-6 text-green-500" />, theme: themes[1], imageSrc: "/fisherman.jpg" },
-    { id: 2, name: "Nudelmacher", icon: <GiCookingPot className="w-6 h-6 text-blue-500" />, theme: themes[2], imageSrc: "/fisherman.jpg" },
-    { id: 3, name: "Ficker", icon: <GiVillage className="w-6 h-6 text-purple-500" />, theme: themes[3], imageSrc: "/fisherman.jpg" }
+    { id: 0, name: name1, icon: <GiFishingPole className="w-6 h-6 text-red-500" />, theme: themes[0], imageSrc: "/fisherman.jpg" },
+    { id: 1, name: name2, icon: <GiAxeInStump className="w-6 h-6 text-green-500" />, theme: themes[1], imageSrc: "/fisherman.jpg" },
+    { id: 2, name: name3, icon: <GiCookingPot className="w-6 h-6 text-blue-500" />, theme: themes[2], imageSrc: "/fisherman.jpg" },
+    { id: 3, name: name4, icon: <GiVillage className="w-6 h-6 text-purple-500" />, theme: themes[3], imageSrc: "/fisherman.jpg" }
   ]);
 
   const handleCharacterSelect = (id: number) => {
@@ -120,6 +125,8 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
     if (selectedCharacter === null && characters.length > 0) {
       handleCharacterSelect(characters[0].id);
     }
+
+    
   }, []);
 
   const getRingColorClass = (character: Character, isSelected: boolean) => {
