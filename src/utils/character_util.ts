@@ -15,11 +15,9 @@ export async function getCharacterLevel(characterId: string, skill: string) {
       throw new Error('Fehler beim Abrufen der Charakterdaten');
     }
 
-    // Charakter anhand der ID finden
     const character = data.characters.find((char: any) => char.id === characterId);
     if (!character) throw new Error('Charakter nicht gefunden');
 
-    // Skill-Umwandlung (falls nötig)
     const skillKey = `level_${skill.toLowerCase()}`;
     if (!(skillKey in character)) throw new Error('Ungültiger Skill-Name');
 

@@ -171,14 +171,14 @@ export default function Inventory() {
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-8 left-8 w-16 h-16 rounded-full bg-gradient-to-br from-amber-700 to-amber-900
           hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1
-          flex items-center justify-center"
+          flex items-center justify-center z-[9999]"
         aria-label="Toggle inventory"
       >
         <GiSchoolBag className="w-8 h-8 text-amber-100" />
       </button>
 
       {isOpen && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[900px] max-h-[80vh] bg-amber-100 rounded-lg shadow-xl p-6 border-2 border-amber-700 z-[1000] flex flex-col">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[900px] max-h-[80vh] bg-amber-100 rounded-lg shadow-xl p-6 border-2 border-amber-700 z-[9999] flex flex-col">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-amber-900 font-bold text-xl">Inventory</h2>
             <button

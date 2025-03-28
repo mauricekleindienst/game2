@@ -106,7 +106,7 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
     setCharacters(updatedCharacters);
     
     if (selectedCharacter === editingCharacter.id) {
-      setTheme(customTheme);
+      const theme = setTheme(customTheme.id);
       
       if (onCharacterSelect) {
         onCharacterSelect({id: editingCharacter.id, color: characterThemeColor});
@@ -145,10 +145,10 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
 
   return (
     <>
-      <div className="fixed bottom-8 left-0 right-0 flex justify-center">
+      <div className="fixed bottom-8 left-0 right-0 flex justify-center z-50">
         <div className="flex flex-row gap-6">
           {characters.map(character => (
-            <div key={character.id} className="relative">
+            <div key={character.id} className="relative group">
               <button
                 onClick={() => handleCharacterSelect(character.id)}
                 className={`
@@ -181,8 +181,25 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
                 <FiEdit3 className="w-4 h-4 text-gray-700" />
               </button>
               
-              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 px-2 py-0.5 rounded-md">
-                <span className="text-xs text-white font-medium">{character.name}</span>
+              <div 
+                className={`absolute -top-10 left-1/2 transform -translate-x-1/2 
+                  px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-md
+                  ${selectedCharacter === character.id 
+                    ? `bg-${character.theme.color}-500/90 text-white font-bold` 
+                    : 'bg-black/75 text-white/90 font-medium'
+                  }
+                  transition-all duration-300 min-w-max
+                  border ${selectedCharacter === character.id 
+                    ? `border-${character.theme.color}-400` 
+                    : 'border-white/20'
+                  }
+                  flex items-center justify-center whitespace-nowrap
+                  opacity-0 group-hover:opacity-100 pointer-events-none
+                  translate-y-1 group-hover:translate-y-0`}
+              >
+                <span className={`text-sm ${selectedCharacter === character.id ? 'drop-shadow-md' : ''}`}>
+                  {character.name}
+                </span>
               </div>
             </div>
           ))}
@@ -192,13 +209,13 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
       {isModalOpen && editingCharacter && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full overflow-hidden">
-            <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Edit Character</h3>
+            <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-wide">Edit Character</h3>
               <button 
                 onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition-colors"
               >
-                <FiX className="w-5 h-5" />
+                <FiX className="w-6 h-6" />
               </button>
             </div>
             
@@ -215,7 +232,7 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
               </div>
               
               <div>
-                <label htmlFor="image-url" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="image-url" className="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-2">
                   Character Image URL
                 </label>
                 <input
@@ -223,13 +240,13 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
                   id="image-url"
                   value={characterImageUrl}
                   onChange={(e) => setCharacterImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="https://dredge.wiki.gg/images/thumb/f/f0/Fisherman.png/300px-Fisherman.png"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-medium"
                 />
               </div>
               
               <div>
-                <label htmlFor="character-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="character-name" className="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-2">
                   Character Name
                 </label>
                 <input
@@ -237,12 +254,12 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
                   id="character-name"
                   value={characterName}
                   onChange={(e) => setCharacterName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-medium text-lg"
                 />
               </div>
               
                 <div>
-                <label htmlFor="color-picker" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="color-picker" className="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-2">
                   Character Color
                 </label>
                 <div className="flex items-center gap-3">
@@ -251,13 +268,13 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
                     id="color-picker"
                     value={characterColor}
                     onChange={handleColorChange}
-                    className="h-10 w-16 cursor-pointer rounded border border-gray-300 dark:border-gray-600"
+                    className="h-12 w-20 cursor-pointer rounded-md border-2 border-gray-300 dark:border-gray-600"
                   />
                   <input
                     type="text"
                     value={characterColor}
                     onChange={(e) => setCharacterColor(e.target.value)}
-                    className="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-medium font-mono uppercase"
                     placeholder="#000000"
                   />
                 </div>
@@ -267,13 +284,13 @@ export default function CharacterSelection({ onCharacterSelect }: CharacterSelec
             <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-end">
               <button
                 onClick={handleCloseModal}
-                className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="mr-3 px-5 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveChanges}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none"
+                className="px-5 py-2.5 text-sm font-bold text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 focus:outline-none transform hover:scale-105"
               >
                 Save Changes
               </button>

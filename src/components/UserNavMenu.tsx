@@ -37,7 +37,7 @@ export default function UserNavMenu() {
 
   return (
     <>
-      <div className="fixed top-8 right-8 z-100" ref={dropdownRef}>
+      <div className="fixed top-8 right-8 z-[9999]" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600
@@ -52,7 +52,7 @@ export default function UserNavMenu() {
         </button>
 
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-1">
+          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-1 z-[9999]">
             <button
               onClick={() => {
                 setIsSettingsOpen(true);

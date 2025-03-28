@@ -10,7 +10,6 @@ export async function GET() {
       return NextResponse.json({ error: "Nicht eingeloggt" }, { status: 401 });
     }
 
-    // Charaktere + Skill-Level abrufen
     const { data, error } = await supabase
       .from('characters')
       .select('id, name, level_cooking,level_fishing,level_mining, level_cutting')

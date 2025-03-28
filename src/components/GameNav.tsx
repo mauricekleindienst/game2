@@ -4,10 +4,10 @@ import React, { JSX, useEffect, useState } from "react";
 import { 
   GiFishingPole, 
   GiAxeInStump, 
-  GiVillage, 
   GiCookingPot, 
   GiMineralPearls, 
-  GiForestCamp
+  GiBlacksmith,
+  GiFarmer
 } from "react-icons/gi";
 import { getTheme, ThemeColor } from '@/lib/theme';
 
@@ -37,7 +37,7 @@ export const locations: Location[] = [
     name: "Woodcutter's Grove",
     gradient: "from-emerald-400 to-emerald-600", 
     icon: <GiAxeInStump className="w-6 h-6 text-white" />,
-    mapPosition: { top: "50%", left: "20%" }
+    mapPosition: { top: "20%", left: "10%" }
   },
   { 
     id: 2, 
@@ -48,23 +48,23 @@ export const locations: Location[] = [
   },
   { 
     id: 3, 
-    name: "Village Center",
+    name: "Farmland",
     gradient: "from-rose-400 to-rose-600", 
-    icon: <GiVillage className="w-6 h-6 text-white" />,
-    mapPosition: { top: "50%", left: "70%" }
+    icon: <GiFarmer className="w-6 h-6 text-white" />,
+    mapPosition: { top: "50%", left: "80%" }
   },
   { 
     id: 4, 
     name: "Mining Cave",
     gradient: "from-purple-400 to-purple-600", 
     icon: <GiMineralPearls className="w-6 h-6 text-white" />,
-    mapPosition: { top: "20%", left: "20%" }
+    mapPosition: { top: "40%", left: "20%" }
   },
   { 
     id: 5, 
-    name: "Forest Camp",
+    name: "Blacksmith",
     gradient: "from-green-400 to-green-600", 
-    icon: <GiForestCamp className="w-6 h-6 text-white" />,
+    icon: <GiBlacksmith className="w-6 h-6 text-white" />,
     mapPosition: { top: "40%", left: "30%" }
   }
 ];
@@ -141,7 +141,7 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
   };
 
   return (
-    <nav className={`shadow-lg rounded-xl mx-auto my-4 max-w-4xl overflow-hidden ${getNavBackgroundColor()} border-2 ${getBorderColor()} transition-all duration-300`}>
+    <nav className={`fixed top-4 left-0 right-0 z-50 shadow-lg rounded-xl mx-auto my-4 max-w-4xl overflow-hidden ${getNavBackgroundColor()} border-2 ${getBorderColor()} transition-all duration-300`}>
       <div className="px-4 py-5">
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 justify-items-center">
           {locations.map((location) => (

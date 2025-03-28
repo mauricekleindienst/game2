@@ -69,9 +69,9 @@ export default function GamePage() {
       case 0: return '/fishing-bg.jpg';
       case 1: return '/woodcutting-bg.jpg';
       case 2: return '/cooking-bg.jpg';
-      case 3: return '/village-bg.jpg';
+      case 3: return '/farmland-bg.jpg';
       case 4: return '/mining-bg.jpg';
-      case 5: return '/forest-bg.jpg';
+      case 5: return '/blacksmith-bg.jpg';
       default: return '/map-bg.jpg';
     }
   };
@@ -86,7 +86,6 @@ export default function GamePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 relative">
-      {/* Background Image */}
       <div className="fixed inset-0 z-0 transition-opacity duration-1000">
         <Image
           src={getBackgroundImage()}
@@ -97,9 +96,7 @@ export default function GamePage() {
         />
       </div>
       
-      {/* Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <UserNavMenu />
        
         <GameNav 
           selectedLocationId={selectedLocation?.id}
@@ -120,9 +117,12 @@ export default function GamePage() {
           )}
           
           <BackgroundMusic />
+          <UserNavMenu />
+
         </div>
       </div>
       <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />
     </div>
+    
   );
 } 
