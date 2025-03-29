@@ -19,26 +19,78 @@ export default function GamePage() {
   const router = useRouter();
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [userSettings, setUserSettings] = useState<any>(null);
   
+  useEffect(() => {
+    if (user) {
+      const fetchUserSettings = async () => {
+        try {
+          const response = await fetch('/api/get_user_settings', {
+            method: 'GET',
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              setUserSettings(data.data);
+              
+              if (data.data === null || data.data.welcome_status === false || data.data.welcome_status === null) {
+                setShowWelcome(true);
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user settings:", error);
+        }
+      };
+      
+      fetchUserSettings();
+    }
+  }, [user]);
+  
+  useEffect(() => {
+    if (user) {
+      const recordLogin = async () => {
+        try {
+          await fetch('/api/update_player', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              login_time: new Date().toISOString(),
+            }),
+          });
+        } catch (error) {
+          console.error("Error recording login time:", error);
+        }
+      };
+      
+      recordLogin();
+      
+      const handleBeforeUnload = () => {
+        const data = JSON.stringify({
+          logout_time: new Date().toISOString(),
+        });
+        
+        navigator.sendBeacon('/api/update_player', data);
+      };
+      
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!loading && !user) {
       router.push('/');
     }
   }, [user, loading, router]);
 
-  useEffect(() => {
-    if (user) {
-      const hasSeenWelcome = localStorage.getItem(`welcome_seen_${user.id}`);
-      if (!hasSeenWelcome) {
-        setShowWelcome(true);
-      }
-    }
-  }, [user]);
-
   const handleCloseWelcome = () => {
-    if (user) {
-      localStorage.setItem(`welcome_seen_${user.id}`, 'true');
-    }
     setShowWelcome(false);
   };
 

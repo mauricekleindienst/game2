@@ -8,6 +8,25 @@ type WelcomeModalProps = {
 export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   if (!isOpen) return null;
 
+  const handleBegin = async () => {
+    try {
+      await fetch('/api/update_player', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          welcome_status: true
+        }),
+      });
+      
+      onClose();
+    } catch (error) {
+      console.error("Error updating welcome status:", error);
+      onClose();
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -55,7 +74,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             </div>
 
             <button
-              onClick={onClose}
+              onClick={handleBegin}
               className="mt-6 w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               Let's Begin!

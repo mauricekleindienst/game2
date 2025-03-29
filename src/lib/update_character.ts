@@ -25,22 +25,18 @@ export async function updateCharacter(data: {
 
   
 
-  // Create an object that only contains fields with values (i.e., non-empty)
-  const validUpdates: Record<string, any> = {}; // We can still keep it flexible
+  const validUpdates: Record<string, any> = {};
 
-  // Loop through the fields and add them to validUpdates if they are not empty or undefined
   for (const key in updates) {
     if (updates[key as keyof typeof updates] !== undefined && updates[key as keyof typeof updates] !== "") {
-      validUpdates[key] = updates[key as keyof typeof updates]; // Type assertion here
+      validUpdates[key] = updates[key as keyof typeof updates]; 
     }
   }
 
-  // If there are no valid updates, return an error
   if (Object.keys(validUpdates).length === 0) {
     return { error: "No fields to update." };
   }
 
-  // Ensure that the location exists in the locations table, if it's being updated
   if (validUpdates.location) {
     const { data: locationData, error: locationError } = await supabase
       .from("locations")
@@ -52,16 +48,14 @@ export async function updateCharacter(data: {
       return { error: "Location not found." };
     }
 
-    validUpdates.location = locationData.id; // Replace location with the location_id
+    validUpdates.location = locationData.id; 
   }
 
-  // Perform the update only with valid data
   const { error } = await supabase
     .from("characters")
-    .update({ ...validUpdates})  // Add user_id to the update query
+    .update({ ...validUpdates})
     .eq("id", id)
-    .eq("user_id", user.id);  // Ensure the update is only allowed for the correct user
-
+    .eq("user_id", user.id);  
   if (error) {
     return { error: error.message };
   }
