@@ -10,9 +10,11 @@ import Map from '@/components/Map';
 import GameNav, { Location, locations } from '@/components/GameNav';
 import WelcomeModal from '@/components/WelcomeModal';
 import Image from 'next/image';
+import { setThemeByColor } from '@/lib/theme';
 
 import BackgroundMusic from "@/components/BackgroundMusic";
 import FishingDock from '@/components/FishingDock';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function GamePage() {
   const { user, loading } = useAuth();
@@ -20,6 +22,9 @@ export default function GamePage() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [userSettings, setUserSettings] = useState<any>(null);
+  const [characters, setCharacters] = useState<any[]>([]);
+  const [isLoadingCharacters, setIsLoadingCharacters] = useState(true);
+  const [activeThemeColor, setActiveThemeColor] = useState<string>('blue');
   
   useEffect(() => {
     if (user) {
@@ -50,6 +55,50 @@ export default function GamePage() {
   
   useEffect(() => {
     if (user) {
+      const checkAndCreateCharacters = async () => {
+        setIsLoadingCharacters(true);
+        try {
+          const response = await fetch('/api/get_characters');
+          
+          if (response.ok) {
+            const data = await response.json();
+            
+            if (data.success) {
+              console.log("Character data from API:", data.data);
+              
+              if (!data.data || data.data.length < 4) {
+                const createResponse = await fetch('/api/create_characters', {
+                  method: 'POST',
+                });
+                
+                if (createResponse.ok) {
+                  const newCharactersResponse = await fetch('/api/get_characters');
+                  if (newCharactersResponse.ok) {
+                    const newData = await newCharactersResponse.json();
+                    if (newData.success) {
+                      console.log("New character data created:", newData.data);
+                      setCharacters(newData.data || []);
+                    }
+                  }
+                }
+              } else {
+                setCharacters(data.data);
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error checking/creating characters:", error);
+        } finally {
+          setIsLoadingCharacters(false);
+        }
+      };
+      
+      checkAndCreateCharacters();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
       const recordLogin = async () => {
         try {
           await fetch('/api/update_player', {
@@ -68,19 +117,32 @@ export default function GamePage() {
       
       recordLogin();
       
-      const handleBeforeUnload = () => {
-        const data = JSON.stringify({
-          logout_time: new Date().toISOString(),
-        });
+      if (typeof window !== 'undefined') {
+        const handleBeforeUnload = () => {
+          const data = JSON.stringify({
+            logout_time: new Date().toISOString(),
+          });
+          
+          if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+            navigator.sendBeacon('/api/update_player', data);
+          } else {
+            try {
+              const xhr = new XMLHttpRequest();
+              xhr.open('POST', '/api/update_player', false); 
+              xhr.setRequestHeader('Content-Type', 'application/json');
+              xhr.send(data);
+            } catch (e) {
+              console.error("Error sending logout data:", e);
+            }
+          }
+        };
         
-        navigator.sendBeacon('/api/update_player', data);
-      };
-      
-      window.addEventListener('beforeunload', handleBeforeUnload);
-      
-      return () => {
-        window.removeEventListener('beforeunload', handleBeforeUnload);
-      };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        
+        return () => {
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+      }
     }
   }, [user]);
 
@@ -99,8 +161,12 @@ export default function GamePage() {
   };
 
   const handleCharacterSelect = (character: {id: number, color: string}) => {
-    // Character selection now only affects the theme styling for components,
-    // but not the page background
+    console.log("Character selected with color:", character.color);
+    
+    if (character.color !== activeThemeColor) {
+      setThemeByColor(character.color);
+      setActiveThemeColor(character.color);
+    }
   };
 
   const renderLocationComponent = () => {
@@ -128,11 +194,16 @@ export default function GamePage() {
     }
   };
 
-  if (loading) {
+  if (loading || isLoadingCharacters) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+      <LoadingScreen 
+        minDisplayTime={5000} 
+        onLoadingComplete={() => {
+          // This will be called after the min display time is over
+          // We don't need to do anything here since the component will
+          // continue to show until loading completes naturally
+        }}
+      />
     );
   }
 
@@ -147,17 +218,18 @@ export default function GamePage() {
           priority
         />
       </div>
-      
       <div className="relative z-10 flex flex-col min-h-screen">
-       
         <GameNav 
           selectedLocationId={selectedLocation?.id}
           onLocationSelect={handleLocationSelect}
+          activeThemeColor={activeThemeColor}
         />
         <div className="flex-1 relative">
-          <CharacterSelection onCharacterSelect={handleCharacterSelect} />
+          <CharacterSelection 
+            onCharacterSelect={handleCharacterSelect} 
+            characters={characters}
+          />
           <Inventory />
-          
           {selectedLocation ? (
             renderLocationComponent()
           ) : (
@@ -166,15 +238,12 @@ export default function GamePage() {
               locations={locations}
               onLocationSelect={handleLocationSelect}
             />
-          )}
-          
+          )}   
           <BackgroundMusic />
           <UserNavMenu />
-
         </div>
       </div>
       <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />
     </div>
-    
   );
 } 

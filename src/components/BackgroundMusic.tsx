@@ -14,25 +14,36 @@ export default function BackgroundMusic() {
   }, [musicVolume]);
 
   useEffect(() => {
+    // Only run on client-side
+    if (typeof window === 'undefined') return;
+
     const audio = new Audio('https://lofistudy.fra1.cdn.digitaloceanspaces.com/Playlist/Background%20music.webm');
     audio.loop = true;
     audioRef.current = audio;
 
     const playAudio = () => {
       if (audioRef.current) {
-        audioRef.current.play();
+        audioRef.current.play().catch(err => {
+          console.warn("Could not play audio automatically:", err);
+        });
         document.removeEventListener('click', playAudio);
       }
     };
 
-    document.addEventListener('click', playAudio);
+    // Only add event listener if document is available
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', playAudio);
+    }
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
       }
-      document.removeEventListener('click', playAudio);
+      // Clean up listener if document is available
+      if (typeof document !== 'undefined') {
+        document.removeEventListener('click', playAudio);
+      }
     };
   }, []);
 

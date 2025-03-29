@@ -22,6 +22,7 @@ export type Location = {
 export type LocationSelectProps = {
   onLocationSelect?: (location: Location | null) => void;
   selectedLocationId?: number | null;
+  activeThemeColor?: string;
 };
 
 export const locations: Location[] = [
@@ -69,12 +70,14 @@ export const locations: Location[] = [
   }
 ];
 
-export default function LocationSelection({ onLocationSelect, selectedLocationId }: LocationSelectProps) {
+export default function LocationSelection({ onLocationSelect, selectedLocationId, activeThemeColor }: LocationSelectProps) {
   const [themeColor, setThemeColor] = useState<ThemeColor>('red');
   const [isMobile, setIsMobile] = useState<boolean>(false);
   
   // Check if we're on mobile on mount and when window resizes
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 640);
     };
@@ -89,24 +92,39 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
   
+  // Update theme when activeThemeColor prop changes
+  useEffect(() => {
+    if (activeThemeColor) {
+      setThemeColor(activeThemeColor as ThemeColor);
+    }
+  }, [activeThemeColor]);
+  
   // Get the current theme on mount and when it changes
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Initial theme setting
     const theme = getTheme();
     setThemeColor(theme.color);
     
     // Setup a MutationObserver to detect theme changes via CSS variables
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'style') {
-          const theme = getTheme();
-          setThemeColor(theme.color);
-        }
-      });
+    const observer = new MutationObserver(() => {
+      const theme = getTheme();
+      setThemeColor(theme.color);
     });
     
     observer.observe(document.documentElement, { attributes: true });
     
-    return () => observer.disconnect();
+    // Create an interval to check for theme changes (backup in case MutationObserver misses something)
+    const intervalId = setInterval(() => {
+      const theme = getTheme();
+      setThemeColor(theme.color);
+    }, 1000); // Check every second
+    
+    return () => {
+      observer.disconnect();
+      clearInterval(intervalId);
+    };
   }, []);
 
   const handleLocationSelect = (location: Location) => {
@@ -120,6 +138,12 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
         case "green": return "ring-green-600";
         case "blue": return "ring-blue-600";
         case "purple": return "ring-purple-600";
+        case "yellow": return "ring-yellow-600";
+        case "pink": return "ring-pink-600";
+        case "indigo": return "ring-indigo-600";
+        case "teal": return "ring-teal-600";
+        case "orange": return "ring-orange-600";
+        case "gray": return "ring-gray-600";
         default: return "ring-blue-600";
       }
     } else {
@@ -133,6 +157,12 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
       case "green": return "text-green-600 dark:text-green-400";
       case "blue": return "text-blue-600 dark:text-blue-400";
       case "purple": return "text-purple-600 dark:text-purple-400";
+      case "yellow": return "text-yellow-600 dark:text-yellow-400";
+      case "pink": return "text-pink-600 dark:text-pink-400";
+      case "indigo": return "text-indigo-600 dark:text-indigo-400";
+      case "teal": return "text-teal-600 dark:text-teal-400";
+      case "orange": return "text-orange-600 dark:text-orange-400";
+      case "gray": return "text-gray-600 dark:text-gray-400";
       default: return "text-blue-600 dark:text-blue-400";
     }
   };
@@ -143,6 +173,12 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
       case "green": return "bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-900/10";
       case "blue": return "bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-900/10";
       case "purple": return "bg-gradient-to-r from-purple-100 to-purple-50 dark:from-purple-900/30 dark:to-purple-900/10";
+      case "yellow": return "bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/30 dark:to-yellow-900/10";
+      case "pink": return "bg-gradient-to-r from-pink-100 to-pink-50 dark:from-pink-900/30 dark:to-pink-900/10";
+      case "indigo": return "bg-gradient-to-r from-indigo-100 to-indigo-50 dark:from-indigo-900/30 dark:to-indigo-900/10";
+      case "teal": return "bg-gradient-to-r from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-900/10";
+      case "orange": return "bg-gradient-to-r from-orange-100 to-orange-50 dark:from-orange-900/30 dark:to-orange-900/10";
+      case "gray": return "bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-900/30 dark:to-gray-900/10";
       default: return "bg-white dark:bg-gray-800";
     }
   };
@@ -153,6 +189,12 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
       case "green": return "border-green-300 dark:border-green-800";
       case "blue": return "border-blue-300 dark:border-blue-800";
       case "purple": return "border-purple-300 dark:border-purple-800";
+      case "yellow": return "border-yellow-300 dark:border-yellow-800";
+      case "pink": return "border-pink-300 dark:border-pink-800";
+      case "indigo": return "border-indigo-300 dark:border-indigo-800";
+      case "teal": return "border-teal-300 dark:border-teal-800";
+      case "orange": return "border-orange-300 dark:border-orange-800";
+      case "gray": return "border-gray-300 dark:border-gray-800";
       default: return "border-gray-200 dark:border-gray-700";
     }
   };
