@@ -1,20 +1,20 @@
 "use client";
 
-import React, { JSX, useEffect, useState, useRef } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { 
   GiFishingPole, 
   GiAxeInStump, 
   GiCookingPot, 
   GiMineralPearls, 
   GiBlacksmith,
-  GiFarmer
+  GiFarmer,
+  GiArena
 } from "react-icons/gi";
 import { FiMenu, FiX } from "react-icons/fi";
 import { getTheme, ThemeColor } from '@/lib/theme';
 import UserNavMenu from "./UserNavMenu";
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import SettingsModal from "./SettingsModal";
+import { useRouter } from 'next/navigation';
+
 import { createPortal } from 'react-dom';
 
 export type Location = {
@@ -77,6 +77,7 @@ export const locations: Location[] = [
 ];
 
 export default function LocationSelection({ onLocationSelect, selectedLocationId, activeThemeColor }: LocationSelectProps) {
+  const router = useRouter();
   const [themeColor, setThemeColor] = useState<ThemeColor>('blue');
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -204,6 +205,10 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
     }
   };
 
+  const handleArenaClick = () => {
+    router.push('/game/arena');
+  };
+
   return (
     <>
       <button 
@@ -310,6 +315,15 @@ export default function LocationSelection({ onLocationSelect, selectedLocationId
         </div>
         <div className={`pr-4 pl-2 border-l ${getBorderColor()}`}>
           <ThemeAwareUserNav themeColor={themeColor} />
+        </div>
+        <div>
+          <button 
+            onClick={handleArenaClick}
+            className="w-12 h-12 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-md hover:shadow-lg"
+            aria-label="Go to Arena"
+          >
+            <GiArena className="w-6 h-6 text-white" />
+          </button>
         </div>
       </nav>
     </>
