@@ -341,3 +341,9 @@ export default function IdleComponent({
     </div>
   );
 } 
+
+export let selectedCharacterId: string
+
+export function setSelectedCharacterId(id:string){
+  selectedCharacterId  =id;
+}

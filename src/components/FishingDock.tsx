@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import IdleComponent, { IdleItem } from './IdleComponent';
+import IdleComponent, { IdleItem,selectedCharacterId } from './IdleComponent';
 import { Fish } from '@/lib/fish';
 import { updateInventory } from '@/utils/inventory_util';
+import { increaseCharacterExp } from '@/utils/character_util';
+
+
 
 export default function FishingDock() {
   const [playerXP, setPlayerXP] = useState<number>(0);
@@ -16,6 +19,7 @@ export default function FishingDock() {
     
     console.log(`Caught ${caughtFish.name}, gained ${caughtFish.xp} XP. Total XP: ${newXP}`);
     updateInventory("fish",caughtFish.id,1)
+    increaseCharacterExp(selectedCharacterId,"fishing",caughtFish.xp)
   };
 
   return (

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import IdleComponent, { IdleItem } from './IdleComponent';
+import IdleComponent, { IdleItem,selectedCharacterId } from './IdleComponent';
 import { Crop } from '@/lib/crops';
+import { updateInventory } from '@/utils/inventory_util';
+import { increaseCharacterExp } from '@/utils/character_util';
 
 export default function Farmland() {
   const [playerXP, setPlayerXP] = useState<number>(0);
@@ -14,7 +16,8 @@ export default function Farmland() {
     setPlayerXP(newXP);
     
     console.log(`Harvested ${harvestedCrop.name}, gained ${harvestedCrop.xp} XP. Total XP: ${newXP}`);
-    // HIER MUSS DIE LOGIC HIN
+    updateInventory("farming_crops",harvestedCrop.id,1)
+    increaseCharacterExp(selectedCharacterId,"farming",harvestedCrop.xp)
   };
 
   return (

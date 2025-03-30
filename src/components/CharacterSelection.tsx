@@ -13,13 +13,16 @@ import {
   setCharacterImageUrl as updateCharacterImageUrl
 } from '@/utils/character_util';
 
+import { setSelectedCharacterId } from './IdleComponent';
+
 type CharacterSelectionProps = {
-  onCharacterSelect: (character: { id: number; color: string }) => void;
+  onCharacterSelect: (character: { id: string; color: string }) => void;
   characters: any[];
 };
 
+
 interface DbCharacter {
-  id: number;
+  id: string;
   name: string;
   color: string;
   imageurl?: string;
@@ -32,7 +35,7 @@ interface DbCharacter {
 }
 
 interface Character {
-  id: number;
+  id: string;
   name: string;
   icon: React.ReactNode;
   theme: Theme;
@@ -89,7 +92,7 @@ const safeColorClass = (prefix: string, colorName: ThemeColor | undefined, suffi
 };
 
 export default function CharacterSelection({ onCharacterSelect, characters = [] }: CharacterSelectionProps) {
-  const [selectedCharacter, setSelectedCharacter] = useState<number | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [characterName, setCharacterName] = useState('');
@@ -172,13 +175,15 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
     };
   };
   
-  const handleCharacterSelect = (id: number) => {
+  const handleCharacterSelect = (id: string) => {
+    
     setSelectedCharacter(id);
+
     
     const character = processedCharacters.find(c => c?.id === id);
     if (character) {
       console.log("Selected character data:", character);
-      
+      setSelectedCharacterId(character.id)
       const theme = setTheme(character.theme?.id || 0);
       
       if (onCharacterSelect) {
@@ -607,8 +612,7 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
       )}
     </>
   );
+
+
 }
 
-export function getSelectedCharacterId(){
-  return 
-}

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import IdleComponent, { IdleItem } from './IdleComponent';
+import IdleComponent, { IdleItem,selectedCharacterId } from './IdleComponent';
 import { Wood } from '@/lib/wood';
+import { updateInventory } from '@/utils/inventory_util';
+import { increaseCharacterExp } from '@/utils/character_util';
 
 export default function WoodcuttersGrove() {
   const [playerXP, setPlayerXP] = useState<number>(0);
@@ -14,7 +16,8 @@ export default function WoodcuttersGrove() {
     setPlayerXP(newXP);
     
     console.log(`Chopped ${choppedWood.name}, gained ${choppedWood.xp} XP. Total XP: ${newXP}`);
-    // HIER MUSS DIE LOGIC HIN
+    updateInventory("wood",choppedWood.id,1)
+    increaseCharacterExp(selectedCharacterId,"fishing",choppedWood.xp)
   };
 
   return (

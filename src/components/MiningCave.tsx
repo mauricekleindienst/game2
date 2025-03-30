@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import IdleComponent, { IdleItem } from './IdleComponent';
+import IdleComponent, { IdleItem,selectedCharacterId } from './IdleComponent';
 import { Ore } from '@/lib/ores';
-
+import { updateInventory } from '@/utils/inventory_util';
+import { increaseCharacterExp } from '@/utils/character_util';
 export default function MiningCave() {
   const [playerXP, setPlayerXP] = useState<number>(0);
   
@@ -15,7 +16,8 @@ export default function MiningCave() {
     setPlayerXP(newXP);
     
     console.log(`Mined ${minedOre.name}, gained ${minedOre.xp} XP. Total XP: ${newXP}`);
-    // HIER MUSS DIE LOGIC HIN
+    updateInventory("ores",minedOre.id,1)
+    increaseCharacterExp(selectedCharacterId,"mining",minedOre.xp)
   };
 
   return (
