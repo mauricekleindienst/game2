@@ -17,7 +17,7 @@ export default function WoodcuttersGrove() {
     
     console.log(`Chopped ${choppedWood.name}, gained ${choppedWood.xp} XP. Total XP: ${newXP}`);
     updateInventory("wood",choppedWood.id,1)
-    increaseCharacterExp(selectedCharacterId,"fishing",choppedWood.xp)
+    increaseCharacterExp(selectedCharacterId,"cutting",choppedWood.xp)
   };
 
   return (
