@@ -3,9 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiClock, FiAward, FiTarget, FiPlay, FiStopCircle } from 'react-icons/fi';
-
 export interface IdleItem {
-  id: number | string;
+  id: string;
   name: string;
   req_level: number;
   xp?: number;
