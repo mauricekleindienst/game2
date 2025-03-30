@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import IdleComponent, { IdleItem } from './IdleComponent';
 import { Fish } from '@/lib/fish';
+import { updateInventory } from '@/utils/inventory_util';
 
 export default function FishingDock() {
   const [playerXP, setPlayerXP] = useState<number>(0);
@@ -14,7 +15,7 @@ export default function FishingDock() {
     setPlayerXP(newXP);
     
     console.log(`Caught ${caughtFish.name}, gained ${caughtFish.xp} XP. Total XP: ${newXP}`);
-    // HIER MUSS DIE LOGIC HIN
+    updateInventory("fish",caughtFish.id,1)
   };
 
   return (

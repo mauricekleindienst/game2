@@ -1,7 +1,7 @@
 import { createClient } from './supabase';
 
 export interface GameItem {
-  id: string | number;
+  id: string;
   name: string;
   req_level: number;
   [key: string]: any;

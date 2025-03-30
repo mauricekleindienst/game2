@@ -40,6 +40,7 @@ interface Character {
   character_nav_id?: number;
 }
 
+
 const isValidImageSource = (src: string | null | undefined): boolean => {
   if (!src) return false;
   
@@ -99,6 +100,10 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
   const [saveError, setSaveError] = useState<string | null>(null);
   const [processedCharacters, setProcessedCharacters] = useState<Character[]>([]);
 
+
+
+
+  
   useEffect(() => {
     console.log("Characters received:", JSON.stringify(characters, null, 2));
     
@@ -385,6 +390,7 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
     }
   };
 
+
   // Get a preview character if editing, or the actual character if not
   const getCharacterToRender = (character: Character) => {
     if (isModalOpen && editingCharacter && character.id === editingCharacter.id) {
@@ -409,6 +415,9 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
   if (!characters || characters.length === 0) {
     return <div className="text-center p-4">No characters available</div>;
   }
+
+
+
 
   return (
     <>
@@ -598,4 +607,8 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
       )}
     </>
   );
+}
+
+export function getSelectedCharacterId(){
+  return 
 }
