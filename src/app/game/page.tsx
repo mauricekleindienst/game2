@@ -119,7 +119,6 @@ export default function GamePage() {
       
       const initializeUserSettings = async () => {
         try {
-          // First, check if user settings already exist
           const settingsResponse = await fetch('/api/get_user_settings', {
             method: 'GET',
           });
@@ -127,7 +126,6 @@ export default function GamePage() {
           if (settingsResponse.ok) {
             const settingsData = await settingsResponse.json();
             
-            // If there are no settings yet, create them with full initialization data
             if (!settingsData.data) {
               await fetch('/api/update_player', {
                 method: 'POST',
@@ -186,8 +184,30 @@ export default function GamePage() {
     }
   }, [user, loading, router]);
 
-  const handleCloseWelcome = () => {
+  const handleCloseWelcome = async () => {
     setShowWelcome(false);
+    
+    // Update welcome_status in database when modal is closed
+    try {
+      const response = await fetch('/api/update_player', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          welcome_status: true
+        }),
+      });
+      
+      if (response.ok) {
+        console.log("Welcome status updated successfully");
+        setUserSettings((prev: any) => prev ? {...prev, welcome_status: true} : null);
+      } else {
+        console.error("Failed to update welcome status");
+      }
+    } catch (error) {
+      console.error("Error updating welcome status:", error);
+    }
   };
 
   const handleLocationSelect = (location: Location | null) => {
