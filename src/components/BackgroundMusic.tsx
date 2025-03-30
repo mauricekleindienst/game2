@@ -14,10 +14,9 @@ export default function BackgroundMusic() {
   }, [musicVolume]);
 
   useEffect(() => {
-    // Only run on client-side
     if (typeof window === 'undefined') return;
 
-    const audio = new Audio('https://lofistudy.fra1.cdn.digitaloceanspaces.com/Playlist/Background%20music.webm');
+    const audio = new Audio('https://lofistudy.fra1.cdn.digitaloceanspaces.com/Playlist/Background%20mussdsdic.webm');
     audio.loop = true;
     audioRef.current = audio;
 
@@ -30,7 +29,6 @@ export default function BackgroundMusic() {
       }
     };
 
-    // Only add event listener if document is available
     if (typeof document !== 'undefined') {
       document.addEventListener('click', playAudio);
     }
@@ -40,7 +38,6 @@ export default function BackgroundMusic() {
         audioRef.current.pause();
         audioRef.current = null;
       }
-      // Clean up listener if document is available
       if (typeof document !== 'undefined') {
         document.removeEventListener('click', playAudio);
       }

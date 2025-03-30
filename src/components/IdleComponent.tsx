@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiClock, FiAward, FiTarget } from 'react-icons/fi';
+import { FiClock, FiAward, FiTarget, FiPlay, FiStopCircle } from 'react-icons/fi';
 
 export interface IdleItem {
   id: number | string;
@@ -47,9 +47,9 @@ export default function IdleComponent({
   },
   actionText = {
     inProgress: 'In Progress...',
-    completed: 'Collected!',
+    completed: 'Completed!',
     button: 'Start',
-    buttonActive: 'In Progress'
+    buttonActive: 'Working...'
   },
   loopActions = false
 }: IdleComponentProps) {
@@ -64,6 +64,17 @@ export default function IdleComponent({
   const titleColor = `text-${colorTheme.primary}-700 dark:text-${colorTheme.primary}-400`;
   const loadingColor = `text-${colorTheme.primary}-700 dark:text-${colorTheme.primary}-400`;
   const accentColor = `text-${colorTheme.accent}-500 dark:text-${colorTheme.accent}-400`;
+  const borderClass = `border-${colorTheme.primary}-200 dark:border-${colorTheme.primary}-900/50`;
+  const headerBgClass = `bg-gradient-to-r from-${colorTheme.primary}-500 to-${colorTheme.secondary}-600`;
+  const progressBgClass = `bg-gradient-to-r from-${colorTheme.primary}-500 to-${colorTheme.accent}-500`;
+  const buttonBgClass = `bg-${colorTheme.primary}-100 dark:bg-${colorTheme.primary}-900/30`;
+  const buttonTextClass = `text-${colorTheme.primary}-700 dark:text-${colorTheme.primary}-400`;
+  const buttonHoverBgClass = `hover:bg-${colorTheme.primary}-200 dark:hover:bg-${colorTheme.primary}-900/50`;
+  const stopButtonBgClass = 'bg-red-100 dark:bg-red-900/30';
+  const stopButtonTextClass = 'text-red-700 dark:text-red-400';
+  const stopButtonHoverBgClass = 'hover:bg-red-200 dark:hover:bg-red-900/50';
+  const disabledButtonBgClass = 'bg-gray-200 dark:bg-gray-700';
+  const disabledButtonTextClass = 'text-gray-400 dark:text-gray-500';
   
   useEffect(() => {
     return () => {
@@ -155,18 +166,20 @@ export default function IdleComponent({
             if (onItemClick && item) {
               onItemClick(item);
             }
-            return { ...prev, [id]: 0 };
+            return { ...prev, [id]: 0 }; 
           } else {
             if (intervalRefs[id]) {
               clearInterval(intervalRefs[id]!);
               setIntervalRefs(prev => ({...prev, [id]: null}));
             }
             
+            const finalProgress = {...prev, [id]: 100};
             setTimeout(() => {
-              setActiveItemId(null);
-            }, 1000);
+              setActiveItemId(null); 
+              setProgressMap(p => ({...p, [id]: 0})); 
+            }, 1500); 
             
-            return {...prev, [id]: 100};
+            return finalProgress;
           }
         }
         
@@ -205,7 +218,7 @@ export default function IdleComponent({
             className="absolute top-0 bottom-0 right-0 px-4 py-3" 
             onClick={() => setError(null)}
           >
-           
+      
           </button>
         </div>
       </div>
@@ -214,110 +227,117 @@ export default function IdleComponent({
 
   return (
     <div className="relative z-10 px-2 sm:px-0">
-      
+  
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-        {items.map((item, index) => (
-          <motion.div
-            key={item.id}
-            className={`
-              relative rounded-xl shadow-lg overflow-hidden
-              cursor-pointer transition-all duration-300
-              bg-white dark:bg-gray-800
-              border border-${colorTheme.primary}-200 dark:border-${colorTheme.primary}-900/50
-              hover:shadow-xl
-              touch-action-manipulation
-            `}
-            style={{ 
-              zIndex: hoveredItem === item.id ? 40 : index
-            }}
-            whileHover={{ 
-              scale: 1.02,
-              zIndex: 40,
-              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.15)"
-            }}
-            whileTap={{ 
-              scale: 0.98
-            }}
-            onClick={() => handleItemClick(item)}
-            onMouseEnter={() => setHoveredItem(item.id)}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <div className={`p-3 sm:p-4 bg-gradient-to-r from-${colorTheme.primary}-500 to-${colorTheme.secondary}-600 text-white`}>
-              <h3 className="font-bold text-base sm:text-lg truncate">{item.name}</h3>
-            </div>
-            
-            <div className="p-3 sm:p-4">
-              <div className="flex flex-wrap gap-3 sm:gap-4 mb-2 sm:mb-3">
-                <div className={`flex items-center text-gray-700 dark:text-gray-300 text-sm sm:text-base`}>
-                  <FiTarget className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                  <span>Level {item.req_level}</span>
-                </div>
-                
-                {item.xp && (
-                  <div className={`flex items-center ${accentColor} text-sm sm:text-base`}>
-                    <FiAward className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                    <span>{item.xp} XP</span>
-                  </div>
-                )}
+        {items.map((item, index) => {
+          const isItemActive = activeItemId === item.id;
+          const currentProgress = progressMap[String(item.id)] || 0;
+          const isCompleted = currentProgress === 100 && !loopActions;
+          
+          return (
+            <motion.div
+              key={item.id}
+              className={`
+                relative rounded-xl shadow-md overflow-hidden group
+                transition-all duration-300 ease-in-out
+                bg-white dark:bg-gray-800 border ${borderClass}
+                ${isItemActive ? 'shadow-lg' : 'hover:shadow-lg'}
+                touch-action-manipulation
+              `}
+              style={{ zIndex: hoveredItem === item.id ? 40 : index }}
+              whileHover={{ y: -3, scale: 1.01, zIndex: 40 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={isCompleted ? undefined : () => handleItemClick(item)} // Disable click when completed briefly
+              onMouseEnter={() => setHoveredItem(item.id)}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <div className={`p-4 ${headerBgClass} text-white`}>
+                <h3 className="font-semibold text-lg truncate">{item.name}</h3>
               </div>
               
-              {activeItemId === item.id && (
-                <div className="mt-3 sm:mt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center text-gray-700 dark:text-gray-300">
-                      <FiClock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                      <span className="text-xs sm:text-sm">
-                        {progressMap[String(item.id)] < 100 || loopActions ? actionText.inProgress : actionText.completed}
-                      </span>
-                    </div>
-                    <span className={`text-xs sm:text-sm font-medium ${progressMap[String(item.id)] < 100 || loopActions ? 'text-gray-600 dark:text-gray-400' : 'text-green-600 dark:text-green-400'}`}>
-                      {progressMap[String(item.id)] || 0}%
-                    </span>
+              <div className="p-4 space-y-4">
+                <div className="flex justify-between items-center text-sm">
+                  <div className="flex items-center text-gray-600 dark:text-gray-400 font-medium">
+                    <FiTarget className="w-4 h-4 mr-1.5 text-gray-400" />
+                    <span>Level {item.req_level}</span>
                   </div>
                   
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 sm:h-2.5 overflow-hidden">
-                    <motion.div 
-                      className={`h-2 sm:h-2.5 rounded-full bg-gradient-to-r from-${colorTheme.primary}-500 to-${colorTheme.accent}-500`}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progressMap[String(item.id)] || 0}%` }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </div>
+                  {item.xp && (
+                    <div className={`flex items-center font-medium ${accentColor}`}>
+                      <FiAward className="w-4 h-4 mr-1.5" />
+                      <span>{item.xp} XP</span>
+                    </div>
+                  )}
                 </div>
-              )}
-              
-              <div className={`mt-3 sm:mt-4 ${activeItemId === item.id && !loopActions ? 'opacity-50' : 'opacity-100'}`}>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`w-full py-2 px-3 sm:px-4 rounded-lg font-medium transition-colors text-sm sm:text-base
-                    ${activeItemId === item.id 
-                      ? (loopActions 
-                        ? `bg-red-100 dark:bg-red-900/30 
-                           text-red-700 dark:text-red-400
-                           hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer`
-                        : `bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed`)
-                      : `bg-${colorTheme.primary}-100 dark:bg-${colorTheme.primary}-900/30 
-                         text-${colorTheme.primary}-700 dark:text-${colorTheme.primary}-400
-                         hover:bg-${colorTheme.primary}-200 dark:hover:bg-${colorTheme.primary}-900/50`
-                    }
-                  `}
-                  disabled={activeItemId === item.id && !loopActions}
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent double triggering
-                    handleItemClick(item);
-                  }}
-                >
-                  {activeItemId === item.id 
-                    ? (loopActions ? 'Stop' : actionText.buttonActive)
-                    : `${actionText.button} ${itemType}`
-                  }
-                </motion.button>
+                
+                {isItemActive && (
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center text-gray-700 dark:text-gray-300 text-xs font-medium">
+                        <FiClock className="w-3 h-3 mr-1 animate-spin [animation-duration:2s]" />
+                        <span>
+                          {isCompleted ? actionText.completed : actionText.inProgress}
+                        </span>
+                      </div>
+                      <span className={`text-xs font-semibold ${isCompleted ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                        {currentProgress}%
+                      </span>
+                    </div>
+                    
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden relative">
+                      <motion.div 
+                        className={`absolute top-0 left-0 h-full rounded-full ${progressBgClass}`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${currentProgress}%` }}
+                        transition={{ duration: 0.15, ease: "linear" }}
+                      />
+                      {currentProgress > 0 && currentProgress < 100 && (
+                        <motion.div 
+                          className={`absolute top-0 left-0 h-full rounded-full ${progressBgClass} opacity-50`}
+                          initial={{ width: `${currentProgress}%` }}
+                          animate={{ width: `${currentProgress}%`, opacity: [0.5, 0.2, 0.5] }}
+                          transition={{ duration: 1, repeat: Infinity }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+
+                <div className={`mt-5 ${isItemActive && !loopActions && !isCompleted ? 'opacity-60' : 'opacity-100'}`}>
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full py-2.5 px-4 rounded-lg font-semibold transition-colors duration-200 text-sm flex items-center justify-center gap-2 shadow-sm
+                      ${isItemActive 
+                        ? (loopActions 
+                          ? `${stopButtonBgClass} ${stopButtonTextClass} ${stopButtonHoverBgClass} cursor-pointer`
+                          : `${disabledButtonBgClass} ${disabledButtonTextClass} cursor-not-allowed`)
+                        : `${buttonBgClass} ${buttonTextClass} ${buttonHoverBgClass} cursor-pointer`
+                      }
+                    `}
+                    disabled={isItemActive && !loopActions && !isCompleted}
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                      handleItemClick(item);
+                    }}
+                  >
+                    {isItemActive ? (
+                      loopActions ? (
+                        <><FiStopCircle className="w-4 h-4" /> Stop</>
+                      ) : (
+                        <>{isCompleted ? actionText.completed : actionText.buttonActive}</>
+                      )
+                    ) : (
+                      <><FiPlay className="w-4 h-4" /> {`${actionText.button} ${item.name}`}</>
+                    )}
+                  </motion.button>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          )
+        })}
       </div>
     </div>
   );

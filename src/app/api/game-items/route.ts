@@ -1,10 +1,16 @@
 import { createServerSupabaseClient } from '@/lib/supabase_server';
 import { NextResponse } from 'next/server';
 import { fishHandler } from '@/lib/fish';
+import { woodHandler } from '@/lib/wood';
+import { oreHandler } from '@/lib/ores';
+import { cropHandler } from '@/lib/crops';
 import { ItemHandler, GameItem } from '@/lib/game-items';
 
 const itemHandlers: Record<string, ItemHandler<GameItem>> = {
   'fish': fishHandler,
+  'wood': woodHandler,
+  'ore': oreHandler,
+  'crop': cropHandler,
 };
 
 export async function GET(req: Request) {

@@ -18,7 +18,6 @@ type CharacterSelectionProps = {
   characters: any[];
 };
 
-// Database character structure
 interface DbCharacter {
   id: number;
   name: string;
@@ -32,7 +31,6 @@ interface DbCharacter {
   character_nav_id?: number;
 }
 
-// Display character structure
 interface Character {
   id: number;
   name: string;
@@ -42,14 +40,11 @@ interface Character {
   character_nav_id?: number;
 }
 
-// Function to validate if a string is a valid URL or a valid path
 const isValidImageSource = (src: string | null | undefined): boolean => {
   if (!src) return false;
   
-  // Any path starting with / is valid for Next.js
   if (src.startsWith('/')) return true;
   
-  // Try to parse as URL
   try {
     new URL(src);
     return true;
@@ -58,28 +53,25 @@ const isValidImageSource = (src: string | null | undefined): boolean => {
   }
 };
 
-// Function to get a safe image source (fallback to default if invalid)
 const getSafeImageSrc = (src: string | null | undefined): string => {
   if (!src) return '/fallback-character.png';
-  
-  // If it's a valid path starting with /, it's a local image
+
   if (src.startsWith('/')) return src;
-  
-  // If it's a valid URL, use it
+
   try {
     new URL(src);
     return src;
   } catch (e) {
-    // If it's not a valid URL, use the fallback
+   
     return '/fallback-character.png';
   }
 };
 
-// Helper function to safely apply theme color classes
+
 const safeColorClass = (prefix: string, colorName: ThemeColor | undefined, suffix: string): string => {
   if (!colorName) return `${prefix}blue-${suffix}`;
   
-  // Make sure all theme colors are handled
+  
   switch (colorName) {
     case 'red': return `${prefix}red-${suffix}`;
     case 'green': return `${prefix}green-${suffix}`;
@@ -107,17 +99,13 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
   const [saveError, setSaveError] = useState<string | null>(null);
   const [processedCharacters, setProcessedCharacters] = useState<Character[]>([]);
 
-  // Debug log to show the character data we're receiving
   useEffect(() => {
     console.log("Characters received:", JSON.stringify(characters, null, 2));
     
-    // Process raw character data into the format needed for display
     if (characters && characters.length > 0) {
       const processed = characters.map(char => {
-        // Map the database character to our display format
         let icon = <GiFishingPole className="text-white w-5 h-5" />;
         
-        // Assign icons based on character stats
         if (char.level_fishing > Math.max(char.level_mining, char.level_cooking, char.level_cutting)) {
           icon = <GiFishingPole className="text-white w-5 h-5" />;
         } else if (char.level_mining > Math.max(char.level_fishing, char.level_cooking, char.level_cutting)) {
@@ -128,13 +116,12 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
           icon = <GiVillage className="text-white w-5 h-5" />;
         }
         
-        // Get the theme color from the database color value
+
         const themeColor = getThemeColorFromValue(char.color);
         
-        // Find the correct theme by color
+       
         const theme = themes.find(t => t.color === themeColor) || themes[0];
         
-        // Create the processed character with the correct theme
         return {
           id: char.id,
           name: char.name || 'Character',
@@ -146,11 +133,10 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
             color: themeColor
           },
           imageurl: char.imageurl,
-          character_nav_id: char.character_nav_id || 999 // Default high value for sorting if missing
+          character_nav_id: char.character_nav_id || 999 
         };
       });
       
-      // Sort characters by character_nav_id (from 1 to 4)
       const sortedCharacters = [...processed].sort((a, b) => 
         (a.character_nav_id || 999) - (b.character_nav_id || 999)
       );
@@ -160,22 +146,18 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
     }
   }, [characters]);
   
-  // Process a real-time preview of the character changes
   const previewCharacterWithChanges = () => {
     if (!editingCharacter) return null;
     
-    // Get the theme color from the current input
     const themeColor = getThemeColorFromValue(characterColor);
     
-    // Find the correct theme by color
     const baseTheme = themes.find(t => t.color === themeColor) || themes[0];
     
-    // Create a preview of the character with current edits
     return {
       ...editingCharacter,
       name: characterName || editingCharacter.name,
       imageurl: characterImageUrl || editingCharacter.imageurl,
-      character_nav_id: editingCharacter.character_nav_id, // Preserve nav ID
+      character_nav_id: editingCharacter.character_nav_id, 
       theme: {
         ...baseTheme,
         name: characterName || editingCharacter.name,
@@ -192,7 +174,6 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
     if (character) {
       console.log("Selected character data:", character);
       
-      // Apply the theme
       const theme = setTheme(character.theme?.id || 0);
       
       if (onCharacterSelect) {
@@ -219,7 +200,6 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
     setSaveError(null);
   };
   
-  // Define a list of available colors
   const colorOptions = [
     { name: 'Red', value: '#7f1d1d', theme: 'red' },
     { name: 'Crimson', value: '#991b1b', theme: 'red' },
@@ -243,18 +223,14 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
     setCharacterColor(color);
     setCharacterThemeColor(themeColor);
     
-    // If editing the currently selected character, preview the theme change
     if (editingCharacter && selectedCharacter === editingCharacter.id) {
-      // Apply color change to see it in real-time on the navbar
       const previewTheme = {
         ...themes.find(t => t.color === themeColor) || themes[0],
         bgColor: color
       };
       
-      // Apply the theme preview immediately
       setTheme(previewTheme.id);
       
-      // Also notify parent component about color change for game navbar
       if (onCharacterSelect) {
         onCharacterSelect({id: editingCharacter.id, color: themeColor});
       }
@@ -273,8 +249,7 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
       console.log("New color (hex):", characterColor);
       console.log("New theme color (name):", characterThemeColor);
       console.log("New image URL:", characterImageUrl);
-      
-      // First save the name
+
       const nameResult = await updateCharacterName(
         editingCharacter.id.toString(), 
         characterName
@@ -284,30 +259,26 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
         throw new Error(nameResult.error || "Failed to update character name");
       }
       
-      // Save the color - using the theme color name (red, blue, etc.)
-      // instead of the hex value for better consistency
+    
       const colorResult = await updateCharacterColor(
         editingCharacter.id.toString(), 
-        characterThemeColor // Use the theme color name instead of the hex value
+        characterThemeColor 
       );
       
       if (!colorResult.success) {
         throw new Error(colorResult.error || "Failed to update character color");
       }
-      
-      // Process the image URL
-      // If the URL doesn't start with http/https but is a valid relative path, 
-      // we'll still save it as-is
+
       let imageUrlToSave = characterImageUrl?.trim() || '';
       
-      // If it's empty, use the fallback
+    
       if (!imageUrlToSave) {
         imageUrlToSave = '/fallback-character.png';
       }
       
       console.log("Saving image URL:", imageUrlToSave);
       
-      // Now save the image URL
+  
       const imageResult = await updateCharacterImageUrl(
         editingCharacter.id.toString(), 
         imageUrlToSave
@@ -328,7 +299,6 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
         bgColor: characterColor
       };
       
-      // Apply the theme immediately to see changes
       const theme = setTheme(customTheme.id);
       
       if (selectedCharacter === editingCharacter.id) {
@@ -337,7 +307,6 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
         }
       }
       
-      // Update the processedCharacters with the new data
       setProcessedCharacters(prevChars => {
         const updatedChars = prevChars.map(char => {
           if (char.id === editingCharacter.id) {
@@ -356,7 +325,6 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
           return char;
         });
         
-        // Re-sort to maintain the character_nav_id order
         return [...updatedChars].sort((a, b) => 
           (a.character_nav_id || 999) - (b.character_nav_id || 999)
         );
@@ -364,8 +332,7 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
       
       handleCloseModal();
       
-      // Instead of reloading the page, we just update the local state
-      // which will automatically trigger a re-render
+
       
     } catch (error) {
       console.error("Error saving character changes:", error);

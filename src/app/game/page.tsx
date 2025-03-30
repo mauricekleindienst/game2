@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import UserNavMenu from '@/components/UserNavMenu';
 import CharacterSelection from '@/components/CharacterSelection';
 import Inventory from '@/components/Inventory';
 import Map from '@/components/Map';
@@ -14,6 +13,9 @@ import { setThemeByColor } from '@/lib/theme';
 
 import BackgroundMusic from "@/components/BackgroundMusic";
 import FishingDock from '@/components/FishingDock';
+import WoodcuttersGrove from '@/components/WoodcuttersGrove';
+import MiningCave from '@/components/MiningCave';
+import Farmland from '@/components/Farmland';
 import LoadingScreen from '@/components/LoadingScreen';
 
 export default function GamePage() {
@@ -115,7 +117,39 @@ export default function GamePage() {
         }
       };
       
+      const initializeUserSettings = async () => {
+        try {
+          // First, check if user settings already exist
+          const settingsResponse = await fetch('/api/get_user_settings', {
+            method: 'GET',
+          });
+          
+          if (settingsResponse.ok) {
+            const settingsData = await settingsResponse.json();
+            
+            // If there are no settings yet, create them with full initialization data
+            if (!settingsData.data) {
+              await fetch('/api/update_player', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  theme: 'dark',
+                  playtime: 0,
+                  login_time: new Date().toISOString(),
+                  welcome_status: false
+                }),
+              });
+              
+              console.log("Created initial user settings");
+            }
+          }
+        } catch (error) {
+          console.error("Error initializing user settings:", error);
+        }
+      };
+      
       recordLogin();
+      initializeUserSettings();
       
       if (typeof window !== 'undefined') {
         const handleBeforeUnload = () => {
@@ -169,17 +203,6 @@ export default function GamePage() {
     }
   };
 
-  const renderLocationComponent = () => {
-    if (!selectedLocation) return null;
-    
-    switch (selectedLocation.id) {
-      case 0: 
-        return <FishingDock />;
-      default:
-        return null;
-    }
-  };
-
   const getBackgroundImage = (): string => {
     if (!selectedLocation) return '/map-bg.jpg';
     
@@ -199,17 +222,18 @@ export default function GamePage() {
       <LoadingScreen 
         minDisplayTime={5000} 
         onLoadingComplete={() => {
-          // This will be called after the min display time is over
-          // We don't need to do anything here since the component will
-          // continue to show until loading completes naturally
+      
         }}
       />
     );
   }
 
+  const navHeightPadding = 'pt-35';
+  const charSelectHeightPadding = 'pb-28';
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 relative">
-      <div className="fixed inset-0 z-0 transition-opacity duration-1000">
+    <div className="h-screen flex flex-col bg-gray-900 relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
         <Image
           src={getBackgroundImage()}
           alt={selectedLocation?.name || "Game world"}
@@ -218,31 +242,48 @@ export default function GamePage() {
           priority
         />
       </div>
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <GameNav 
-          selectedLocationId={selectedLocation?.id}
-          onLocationSelect={handleLocationSelect}
-          activeThemeColor={activeThemeColor}
-        />
-        <div className="flex-1 relative">
-          <CharacterSelection 
-            onCharacterSelect={handleCharacterSelect} 
-            characters={characters}
+
+      <GameNav 
+        selectedLocationId={selectedLocation?.id}
+        onLocationSelect={handleLocationSelect}
+        activeThemeColor={activeThemeColor}
+      />
+
+      <div className={`flex-1 overflow-y-auto relative z-10 ${navHeightPadding} ${charSelectHeightPadding}`}>
+        {selectedLocation ? (
+          <div className="px-4">
+            <div className={selectedLocation.id === 0 ? 'block' : 'hidden'}>
+              <FishingDock />
+            </div>
+            <div className={selectedLocation.id === 1 ? 'block' : 'hidden'}>
+              <WoodcuttersGrove />
+            </div>
+            <div className={selectedLocation.id === 3 ? 'block' : 'hidden'}>
+              <Farmland />
+            </div>
+            <div className={selectedLocation.id === 4 ? 'block' : 'hidden'}>
+              <MiningCave />
+            </div>
+          </div>
+        ) : (
+          <Map 
+            selectedLocation={selectedLocation}
+            locations={locations}
+            onLocationSelect={handleLocationSelect}
           />
-          <Inventory />
-          {selectedLocation ? (
-            renderLocationComponent()
-          ) : (
-            <Map 
-              selectedLocation={selectedLocation}
-              locations={locations}
-              onLocationSelect={handleLocationSelect}
-            />
-          )}   
-          <BackgroundMusic />
-          <UserNavMenu />
-        </div>
+        )}
       </div>
+
+      <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 z-40 flex justify-center">
+        <Inventory />
+      </div>
+
+      <CharacterSelection 
+        onCharacterSelect={handleCharacterSelect} 
+        characters={characters}
+      />
+
+      <BackgroundMusic />
       <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />
     </div>
   );

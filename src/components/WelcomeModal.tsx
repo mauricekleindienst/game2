@@ -9,22 +9,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   if (!isOpen) return null;
 
   const handleBegin = async () => {
-    try {
-      await fetch('/api/update_player', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          welcome_status: true
-        }),
-      });
-      
-      onClose();
-    } catch (error) {
-      console.error("Error updating welcome status:", error);
-      onClose();
-    }
+    onClose();
   };
 
   return (

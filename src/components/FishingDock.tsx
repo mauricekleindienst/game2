@@ -12,11 +12,13 @@ export default function FishingDock() {
     
     const newXP = playerXP + caughtFish.xp;
     setPlayerXP(newXP);
+    
+    console.log(`Caught ${caughtFish.name}, gained ${caughtFish.xp} XP. Total XP: ${newXP}`);
+    // HIER MUSS DIE LOGIC HIN
   };
 
   return (
-    // Using a very low z-index to ensure it's below other UI elements
-    <div className="flex-1 mt-45 mb-28 px-4 max-w-6xl mx-auto" style={{ zIndex: 1 }}>
+    <div className="flex-1 px-4 max-w-6xl mx-auto">
       <IdleComponent
         title="Available Fish Types"
         itemType="fish"
@@ -24,9 +26,9 @@ export default function FishingDock() {
         onItemClick={handleFishCaught}
         colorTheme={{
           primary: 'blue',
-          secondary: 'indigo',
+          secondary: 'blue',
           text: 'white',
-          accent: 'cyan'
+          accent: 'blue'
         }}
         actionText={{
           inProgress: 'Fishing...',

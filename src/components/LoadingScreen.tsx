@@ -17,7 +17,6 @@ export default function LoadingScreen({
   useEffect(() => {
     const startTime = Date.now();
     
-    // Set a timer for the minimum display time
     const timer = setTimeout(() => {
       setIsComplete(true);
       if (onLoadingComplete) {
@@ -25,7 +24,6 @@ export default function LoadingScreen({
       }
     }, minDisplayTime);
     
-    // Cleanup function
     return () => {
       clearTimeout(timer);
     };

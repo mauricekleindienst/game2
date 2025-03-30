@@ -137,50 +137,46 @@ export const getThemeColorFromValue = (color: string): ThemeColor => {
   
   const colorValue = color.toLowerCase();
   
-  // Check if it's a hex value
+
   if (colorValue.startsWith('#')) {
-    // Red colors
     if (colorValue.includes('#7f1d1d') || colorValue.includes('#991b1b')) {
       return 'red';
     }
-    // Green colors
+
     else if (colorValue.includes('#14532d') || colorValue.includes('#047857')) {
       return 'green';
     }
-    // Blue colors
     else if (colorValue.includes('#1e3a8a') || colorValue.includes('#0369a1')) {
       return 'blue';
     }
-    // Purple colors
+
     else if (colorValue.includes('#581c87') || colorValue.includes('#6b21a8')) {
       return 'purple';
     }
-    // Yellow colors
     else if (colorValue.includes('#854d0e') || colorValue.includes('#b45309')) {
       return 'yellow';
     }
-    // Pink colors
     else if (colorValue.includes('#831843') || colorValue.includes('#9d174d')) {
       return 'pink';
     }
-    // Indigo colors
+
     else if (colorValue.includes('#3730a3')) {
       return 'indigo';
     }
-    // Teal colors
+
     else if (colorValue.includes('#0f766e')) {
       return 'teal';
     }
-    // Orange colors
+
     else if (colorValue.includes('#9a3412')) {
       return 'orange';
     }
-    // Gray colors
+
     else if (colorValue.includes('#374151')) {
       return 'gray';
     }
     
-    // Generic fallbacks based on hex code patterns
+
     if (colorValue.includes('f') && (colorValue.includes('0') || colorValue.includes('1') || colorValue.includes('2'))) {
       return 'red';
     } else if (colorValue.includes('0') && colorValue.includes('f') && colorValue.includes('0')) {
@@ -193,7 +189,7 @@ export const getThemeColorFromValue = (color: string): ThemeColor => {
     return 'blue';
   }
   
-  // Check named colors
+ 
   if (colorValue === 'red') return 'red';
   if (colorValue === 'green') return 'green';
   if (colorValue === 'blue') return 'blue';
@@ -205,7 +201,7 @@ export const getThemeColorFromValue = (color: string): ThemeColor => {
   if (colorValue === 'orange') return 'orange';
   if (colorValue === 'gray') return 'gray';
   
-  // Default to blue for any other value
+ 
   return 'blue';
 };
 
@@ -223,12 +219,12 @@ export const setTheme = (themeId: number): Theme => {
   return theme;
 };
 
-// Set theme by color name or value
+
 export const setThemeByColor = (color: string): Theme => {
   const themeColor = getThemeColorFromValue(color);
   const theme = themes.find(t => t.color === themeColor) || themes[0];
   
-  // Set as active theme
+
   return setTheme(theme.id);
 };
 

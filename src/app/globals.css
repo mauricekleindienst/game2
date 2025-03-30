@@ -34,14 +34,19 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translate(-50%, -48%) scale(0.96);
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 }
 
 .animate-fadeIn {
   animation: fadeIn 0.2s ease-out;
+}
+
+/* Add the animation for modal fade-in */
+.animate-fade-in-fast {
+  animation: fadeIn 0.2s ease-out forwards;
 }

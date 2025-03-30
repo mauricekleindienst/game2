@@ -37,8 +37,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   };
 
   return (
-    <div className="fixed inset-0   flex items-center justify-center z-50">
-      <div className="w-96 bg-amber-100 rounded-lg shadow-xl p-6 border-2 border-amber-700 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 flex items-center justify-center z-[2000]">
+      {/* Modal backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm" 
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      
+      {/* Modal content */}
+      <div 
+        className="relative z-[2001] w-96 bg-amber-100 dark:bg-gray-800 rounded-lg shadow-xl p-6 
+               border-2 border-amber-700 dark:border-amber-600 max-h-[90vh] overflow-y-auto
+               animate-fade-in-fast"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-amber-900 font-bold text-xl">Settings</h2>
           <button
