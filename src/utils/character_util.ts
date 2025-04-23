@@ -1,3 +1,127 @@
+export function getLevelFromXp(xp: number): number {
+  const levels = {
+    "1": { "total_xp": 0 },
+    "2": { "total_xp": 83 },
+    "3": { "total_xp": 175 },
+    "4": { "total_xp": 277 },
+    "5": { "total_xp": 389 },
+    "6": { "total_xp": 513 },
+    "7": { "total_xp": 651 },
+    "8": { "total_xp": 803 },
+    "9": { "total_xp": 970 },
+    "10": { "total_xp": 1155 },
+    "11": { "total_xp": 1360 },
+    "12": { "total_xp": 1585 },
+    "13": { "total_xp": 1834 },
+    "14": { "total_xp": 2109 },
+    "15": { "total_xp": 2413 },
+    "16": { "total_xp": 2748 },
+    "17": { "total_xp": 3118 },
+    "18": { "total_xp": 3526 },
+    "19": { "total_xp": 3976 },
+    "20": { "total_xp": 4473 },
+    "21": { "total_xp": 5021 },
+    "22": { "total_xp": 5626 },
+    "23": { "total_xp": 6294 },
+    "24": { "total_xp": 7032 },
+    "25": { "total_xp": 7845 },
+    "26": { "total_xp": 8743 },
+    "27": { "total_xp": 9734 },
+    "28": { "total_xp": 10828 },
+    "29": { "total_xp": 12035 },
+    "30": { "total_xp": 13367 },
+    "31": { "total_xp": 14837 },
+    "32": { "total_xp": 16460 },
+    "33": { "total_xp": 18251 },
+    "34": { "total_xp": 20228 },
+    "35": { "total_xp": 22410 },
+    "36": { "total_xp": 24819 },
+    "37": { "total_xp": 27478 },
+    "38": { "total_xp": 30413 },
+    "39": { "total_xp": 33652 },
+    "40": { "total_xp": 37229 },
+    "41": { "total_xp": 41176 },
+    "42": { "total_xp": 45534 },
+    "43": { "total_xp": 50344 },
+    "44": { "total_xp": 55655 },
+    "45": { "total_xp": 61517 },
+    "46": { "total_xp": 67989 },
+    "47": { "total_xp": 75133 },
+    "48": { "total_xp": 83020 },
+    "49": { "total_xp": 91727 },
+    "50": { "total_xp": 101339 },
+    "51": { "total_xp": 111951 },
+    "52": { "total_xp": 123666 },
+    "53": { "total_xp": 136600 },
+    "54": { "total_xp": 150879 },
+    "55": { "total_xp": 166642 },
+    "56": { "total_xp": 184046 },
+    "57": { "total_xp": 203260 },
+    "58": { "total_xp": 224473 },
+    "59": { "total_xp": 247892 },
+    "60": { "total_xp": 273748 },
+    "61": { "total_xp": 302295 },
+    "62": { "total_xp": 333811 },
+    "63": { "total_xp": 368606 },
+    "64": { "total_xp": 407022 },
+    "65": { "total_xp": 449435 },
+    "66": { "total_xp": 496261 },
+    "67": { "total_xp": 547960 },
+    "68": { "total_xp": 605039 },
+    "69": { "total_xp": 668058 },
+    "70": { "total_xp": 737635 },
+    "71": { "total_xp": 814452 },
+    "72": { "total_xp": 899264 },
+    "73": { "total_xp": 992902 },
+    "74": { "total_xp": 1096286 },
+    "75": { "total_xp": 1210429 },
+    "76": { "total_xp": 1336451 },
+    "77": { "total_xp": 1475589 },
+    "78": { "total_xp": 1629208 },
+    "79": { "total_xp": 1798816 },
+    "80": { "total_xp": 1986076 },
+    "81": { "total_xp": 2192826 },
+    "82": { "total_xp": 2421095 },
+    "83": { "total_xp": 2673123 },
+    "84": { "total_xp": 2951382 },
+    "85": { "total_xp": 3258603 },
+    "86": { "total_xp": 3597800 },
+    "87": { "total_xp": 3972303 },
+    "88": { "total_xp": 4385785 },
+    "89": { "total_xp": 4842305 },
+    "90": { "total_xp": 5346341 },
+    "91": { "total_xp": 5902840 },
+    "92": { "total_xp": 6517263 },
+    "93": { "total_xp": 7195638 },
+    "94": { "total_xp": 7944624 },
+    "95": { "total_xp": 8771568 },
+    "96": { "total_xp": 9684587 },
+    "97": { "total_xp": 10692639 },
+    "98": { "total_xp": 11805616 },
+    "99": { "total_xp": 13034441 },
+  };
+  const levelStrings = Object.keys(levels).sort((a, b) => parseInt(a) - parseInt(b));
+
+  let resultLevel = 1;
+
+  if (xp < levels[levelStrings[0] as keyof typeof levels].total_xp) {
+    resultLevel = 1;
+  } else {
+    for (const levelString of levelStrings) {
+      if (xp <= levels[levelString as keyof typeof levels].total_xp) {
+        resultLevel = parseInt(levelString);
+        break;
+      }
+    }
+    if (xp > levels[levelStrings[levelStrings.length - 1] as keyof typeof levels].total_xp) {
+      resultLevel = parseInt(levelStrings[levelStrings.length - 1] as keyof typeof levels);
+    }
+  }
+
+  return resultLevel;
+}
+
+
 // Helper function to get the base URL for API calls
 const getBaseUrl = (): string => {
   if (typeof window === 'undefined') return '';

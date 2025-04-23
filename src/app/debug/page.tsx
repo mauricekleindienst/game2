@@ -58,9 +58,7 @@ const DebugPage = () => {
 
       if (typeof result === "string") {
         setResultMessage(result);
-      } else {
-        setResultMessage(result.success ? result.message : result.error || "Unbekannte Antwort");
-      }
+      } 
     } catch (error) {
       setResultMessage(`Fehler: ${error instanceof Error ? error.message : "Unbekannter Fehler"}`);
     }

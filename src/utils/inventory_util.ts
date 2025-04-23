@@ -50,8 +50,6 @@ export async function getLowestFreeSlot(maxSlots: number = 50): Promise<number |
  * @param itemType type of item to add.
  * @param itemId id of item to add.
  * @param quantity quantity of items added.
- * @param slot if empty picks lowest slot.
- * @param userId user ID.
  * @returns success: true, message: "Item added/updated", slot: assignedSlot, or error message.
  */
 export async function updateInventory(
