@@ -1,28 +1,22 @@
 
-
-/**
- * Fetches the inventory and finds the lowest available inventory slot.
- * @param maxSlots - The maximum number of inventory slots (default is 28).
- * @returns The lowest available slot number, or null if the inventory is full.
- */
 import { createServerSupabaseClient } from "@/lib/supabase_server";
 
-export async function getLowestFreeSlot(maxSlots: number = 50): Promise<number | null> {
+export async function getLowestFreeSlot(maxSlots: number = 100): Promise<number | null> { 
   try {
     const supabase = await createServerSupabaseClient();
 
-    // Aktuellen Benutzer abrufen
+
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       console.error("User authentication error:", authError);
       return null;
     }
 
-    // Inventar des Benutzers abrufen
+   
     const { data: inventory, error } = await supabase
       .from("inventory")
       .select("slot")
-      .eq("user_id", user.id); // Filter nach user_id
+      .eq("user_id", user.id); 
 
     if (error) {
       throw error;
@@ -30,28 +24,20 @@ export async function getLowestFreeSlot(maxSlots: number = 50): Promise<number |
 
     const occupiedSlots = new Set(inventory.map((item: any) => item.slot));
 
-    // Ersten freien Slot finden
-    for (let i = 1; i <= maxSlots; i++) {
+    for (let i = 0; i < maxSlots; i++) { 
       if (!occupiedSlots.has(i)) {
         return i;
       }
     }
 
-    return null; // Kein freier Slot verfügbar
+    return null; 
   } catch (error) {
     console.error("Error fetching inventory:", error);
     return null;
   }
 }
 
-/**
- * Updates inventory.
- *
- * @param itemType type of item to add.
- * @param itemId id of item to add.
- * @param quantity quantity of items added.
- * @returns success: true, message: "Item added/updated", slot: assignedSlot, or error message.
- */
+
 export async function updateInventory(
   itemType: string,
   itemId: string,

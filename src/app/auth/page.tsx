@@ -68,11 +68,22 @@ export default function AuthPage() {
             </div>
 
             <div className="p-8">
-              {activeView === 'login' ? <LoginForm /> : <SignupForm />}
+              {activeView === 'login' ? (
+                <>
+                  <LoginForm />
+                  <div className="mt-4 text-center">
+                    <a href="/auth/request-password-reset" className="text-sm font-medium text-amber-400 hover:text-amber-200">
+                      Forgot password?
+                    </a>
+                  </div>
+                </>
+              ) : (
+                <SignupForm />
+              )}
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}

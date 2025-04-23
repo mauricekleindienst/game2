@@ -66,19 +66,19 @@ export async function updateInventory(data: {
       }
     }
   } else if (data.quantity > 0) {
-     // Hole den niedrigsten freien Slot
+     // Hole den niedrigsten freien Slot (0-based)
   const lowestSlot = await getLowestFreeSlot();
   if (lowestSlot === null) {
     return { error: "No free slot available." };
   }
-  data.slot = lowestSlot;
+  data.slot = lowestSlot; // Assign the 0-based slot directly
 
     // Falls das Item nicht existiert und eine positive Menge hinzugefügt wird, erstelle es
     const { error: insertError } = await supabase.from("inventory").insert({
       user_id: data.user_id,
       item_id: data.item_id,
       item_type: data.item_type,
-      slot: data.slot,
+      slot: data.slot, // Use the 0-based slot directly
       quantity: data.quantity,
     });
 

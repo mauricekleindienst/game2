@@ -46,44 +46,49 @@ body {
   animation: fadeIn 0.2s ease-out;
 }
 
-/* Add the animation for modal fade-in */
 .animate-fade-in-fast {
   animation: fadeIn 0.2s ease-out forwards;
 }
 
-/* Custom scrollbar styles */
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 10px; 
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(205, 160, 95, 0.1);
-  border-radius: 10px;
+  background: transparent; 
+  margin: 2px; 
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(180, 120, 60, 0.3);
-  border-radius: 10px;
+  background-color: #854d0e; 
+  border-radius: 20px; 
+  border: 2px solid #fef3c7; 
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(180, 120, 60, 0.5);
+  background-color: #a16207; 
 }
 
-/* Dark mode scrollbar */
-.dark .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(120, 80, 40, 0.1);
-}
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(205, 160, 95, 0.3);
+  background-color: #a16207; /* Lighter amber in dark mode */
+  border: 2px solid #451a03; /* Darker border in dark mode */
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(205, 160, 95, 0.5);
+  background-color: #ca8a04; 
 }
 
-/* Drag and drop animations */
+.custom-scrollbar {
+  scrollbar-width: thin; 
+  scrollbar-color: #854d0e #fef3c7; 
+}
+
+.dark .custom-scrollbar {
+   scrollbar-color: #a16207 #451a03; 
+}
+
 @keyframes itemGlow {
   0%, 100% {
     box-shadow: 0 0 5px rgba(217, 119, 6, 0.5);
@@ -104,7 +109,6 @@ body {
   background-color: rgba(217, 119, 6, 0.1) !important;
 }
 
-/* Tooltip styles */
 .inventory-tooltip {
   position: absolute;
   z-index: 100;

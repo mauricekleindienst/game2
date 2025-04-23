@@ -13,7 +13,6 @@ export async function GET() {
       return NextResponse.json({ error: "Authentication error" }, { status: 401 });
     }
     
-    // Fetch all inventory items for this user, organized in slot order
     const inventory = await getInventoryForUser(user.id);
     
     return NextResponse.json({ 
@@ -43,7 +42,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Authentication error" }, { status: 401 });
     }
     
-    // Get the item data from the request
     const { itemType, itemId, quantity = 1, slot } = await req.json();
     
     if (!itemType || !itemId) {
@@ -53,7 +51,6 @@ export async function POST(req: Request) {
       );
     }
     
-    // Check if the item exists in the corresponding table
     const { data: itemExists, error: itemCheckError } = await supabase
       .from(itemType)
       .select('id')
@@ -67,11 +64,9 @@ export async function POST(req: Request) {
       );
     }
     
-    // Determine the slot to use
     let slotToUse = slot;
     
     if (slotToUse === undefined) {
-      // Find the next available slot
       const { data: allItems } = await supabase
         .from('inventory')
         .select('slot')
@@ -79,8 +74,7 @@ export async function POST(req: Request) {
         
       const occupiedSlots = new Set((allItems || []).map(item => item.slot));
       
-      // Find the first free slot
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 100; i++) { 
         if (!occupiedSlots.has(i)) {
           slotToUse = i;
           break;
@@ -94,12 +88,11 @@ export async function POST(req: Request) {
         );
       }
     } else {
-      // Check if the specified slot is already occupied
       const { data: existingItems } = await supabase
         .from('inventory')
         .select('id')
         .eq('user_id', user.id)
-        .eq('slot', slotToUse);
+        .eq('slot', slotToUse); 
         
       if (existingItems && existingItems.length > 0) {
         return NextResponse.json(
@@ -109,7 +102,6 @@ export async function POST(req: Request) {
       }
     }
     
-    // Add the item to the inventory
     const { data: newItem, error: insertError } = await supabase
       .from('inventory')
       .insert({
@@ -117,7 +109,7 @@ export async function POST(req: Request) {
         item_type: itemType,
         item_id: itemId,
         quantity,
-        slot: slotToUse
+        slot: slotToUse 
       })
       .select()
       .single();
