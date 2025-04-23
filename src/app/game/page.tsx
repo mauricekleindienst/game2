@@ -10,13 +10,14 @@ import GameNav, { Location, locations } from '@/components/GameNav';
 import WelcomeModal from '@/components/WelcomeModal';
 import Image from 'next/image';
 import { setThemeByColor } from '@/lib/theme';
-
 import BackgroundMusic from "@/components/BackgroundMusic";
 import FishingDock from '@/components/FishingDock';
 import WoodcuttersGrove from '@/components/WoodcuttersGrove';
 import MiningCave from '@/components/MiningCave';
 import Farmland from '@/components/Farmland';
 import LoadingScreen from '@/components/LoadingScreen';
+import CharacterLevelInfo from '@/components/CharacterLevelInfo';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function GamePage() {
   const { user, loading } = useAuth();
@@ -27,7 +28,33 @@ export default function GamePage() {
   const [characters, setCharacters] = useState<any[]>([]);
   const [isLoadingCharacters, setIsLoadingCharacters] = useState(true);
   const [activeThemeColor, setActiveThemeColor] = useState<string>('blue');
-  
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
+  const supabase = React.useRef<any>(null);
+
+  const selectedCharacter = React.useMemo(() => {
+    if (!characters || characters.length === 0) return null;
+    if (selectedCharacterId) {
+      return characters.find((c: any) => c.id === selectedCharacterId) || characters[0];
+    }
+    return characters[0];
+  }, [characters, selectedCharacterId]);
+
+  const characterLevelInfoProps = React.useMemo(() => {
+    if (!selectedCharacter) return null;
+    return {
+      characterName: selectedCharacter.name || 'Character',
+      avatarUrl: selectedCharacter.imageurl || '/fallback-character.jpg',
+      skills: [
+        { name: "Fishing" as const, xp: selectedCharacter.level_fishing || 0 },
+        { name: "Woodcutting" as const, xp: selectedCharacter.level_cutting || 0 },
+        { name: "Cooking" as const, xp: selectedCharacter.level_cooking || 0 },
+        { name: "Mining" as const, xp: selectedCharacter.level_mining || 0 },
+        { name: "Farming" as const, xp: selectedCharacter.level_farming || 0 },
+        { name: "Blacksmithing" as const, xp: selectedCharacter.level_blacksmithing || 0 },
+      ]
+    };
+  }, [selectedCharacter]);
+
   useEffect(() => {
     if (user) {
       const fetchUserSettings = async () => {
@@ -184,10 +211,40 @@ export default function GamePage() {
     }
   }, [user, loading, router]);
 
+  useEffect(() => {
+    if (!supabase.current) {
+      supabase.current = createClientComponentClient();
+    }
+    if (!selectedCharacterId) return;
+
+    const channel = supabase.current
+      .channel('public:characters')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'characters',
+          filter: `id=eq.${selectedCharacterId}`,
+        },
+        (payload: any) => {
+          fetch('/api/get_characters')
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) setCharacters(data.data);
+            });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [selectedCharacterId]);
+
   const handleCloseWelcome = async () => {
     setShowWelcome(false);
     
-    // Update welcome_status in database when modal is closed
     try {
       const response = await fetch('/api/update_player', {
         method: 'POST',
@@ -214,13 +271,12 @@ export default function GamePage() {
     setSelectedLocation(location);
   };
 
-  const handleCharacterSelect = (character: {id: number, color: string}) => {
-    console.log("Character selected with color:", character.color);
-    
+  const handleCharacterSelect = (character: {id: string, color: string}) => {
     if (character.color !== activeThemeColor) {
       setThemeByColor(character.color);
       setActiveThemeColor(character.color);
     }
+    setSelectedCharacterId(character.id);
   };
 
   const getBackgroundImage = (): string => {
@@ -269,29 +325,36 @@ export default function GamePage() {
         activeThemeColor={activeThemeColor}
       />
 
-      <div className={`flex-1 overflow-y-auto relative z-10 ${navHeightPadding} ${charSelectHeightPadding}`}>
-        {selectedLocation ? (
-          <div className="px-4">
-            <div className={selectedLocation.id === 0 ? 'block' : 'hidden'}>
-              <FishingDock />
-            </div>
-            <div className={selectedLocation.id === 1 ? 'block' : 'hidden'}>
-              <WoodcuttersGrove />
-            </div>
-            <div className={selectedLocation.id === 3 ? 'block' : 'hidden'}>
-              <Farmland />
-            </div>
-            <div className={selectedLocation.id === 4 ? 'block' : 'hidden'}>
-              <MiningCave />
-            </div>
+      <div className="flex flex-row h-full relative z-10">
+        <div className="hidden md:flex flex-col items-start justify-start pt-36 pl-6 w-80">
+          {characterLevelInfoProps && <CharacterLevelInfo {...characterLevelInfoProps} />}
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <div className={`relative ${navHeightPadding} ${charSelectHeightPadding}`}>
+            {selectedLocation ? (
+              <div className="px-4">
+                <div className={selectedLocation.id === 0 ? 'block' : 'hidden'}>
+                  <FishingDock />
+                </div>
+                <div className={selectedLocation.id === 1 ? 'block' : 'hidden'}>
+                  <WoodcuttersGrove />
+                </div>
+                <div className={selectedLocation.id === 3 ? 'block' : 'hidden'}>
+                  <Farmland />
+                </div>
+                <div className={selectedLocation.id === 4 ? 'block' : 'hidden'}>
+                  <MiningCave />
+                </div>
+              </div>
+            ) : (
+              <Map 
+                selectedLocation={selectedLocation}
+                locations={locations}
+                onLocationSelect={handleLocationSelect}
+              />
+            )}
           </div>
-        ) : (
-          <Map 
-            selectedLocation={selectedLocation}
-            locations={locations}
-            onLocationSelect={handleLocationSelect}
-          />
-        )}
+        </div>
       </div>
 
       <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 z-40 flex justify-center">
@@ -307,4 +370,4 @@ export default function GamePage() {
       <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />
     </div>
   );
-} 
+}
