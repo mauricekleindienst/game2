@@ -29,6 +29,7 @@ export default function GamePage() {
   const [isLoadingCharacters, setIsLoadingCharacters] = useState(true);
   const [activeThemeColor, setActiveThemeColor] = useState<string>('blue');
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const supabase = React.useRef<any>(null);
 
   const selectedCharacter = React.useMemo(() => {
@@ -326,11 +327,25 @@ export default function GamePage() {
       />
 
       <div className="flex flex-row h-full relative z-10">
-        <div className="hidden md:flex flex-col items-start justify-start pt-36 pl-6 w-80">
-          {characterLevelInfoProps && <CharacterLevelInfo {...characterLevelInfoProps} />}
+        {/* Fixed-positioned sidebar that doesn't affect layout flow */}
+        <div className="hidden md:block h-full" style={{ width: sidebarCollapsed ? '5rem' : '20rem', flexShrink: 0 }}>
+          {/* This is just a spacer div that reserves the space in the layout */}
         </div>
-        <div className="flex-1 overflow-y-auto">
-          <div className={`relative ${navHeightPadding} ${charSelectHeightPadding}`}>
+        
+        {/* Absolutely positioned sidebar that overlays without affecting flow - now centered vertically */}
+        <div className="hidden md:flex fixed top-0 left-0 h-full z-30 items-center pl-6">
+          {characterLevelInfoProps && (
+            <CharacterLevelInfo
+              {...characterLevelInfoProps}
+              collapsed={sidebarCollapsed}
+              onCollapseToggle={() => setSidebarCollapsed((c) => !c)}
+            />
+          )}
+        </div>
+        
+        {/* Main content: no margin-left, always properly centered */}
+        <div className="flex-1 flex items-center justify-center overflow-y-auto">
+          <div className={`relative ${navHeightPadding} ${charSelectHeightPadding} w-full`}> 
             {selectedLocation ? (
               <div className="px-4">
                 <div className={selectedLocation.id === 0 ? 'block' : 'hidden'}>
