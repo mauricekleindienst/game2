@@ -1,4 +1,16 @@
-export function getLevelFromXp(xp: number): number {
+/**
+ * Gibt Level-Infos basierend auf den Gesamt-XP zurück.
+ *
+ * @param xp - Die gesamten Erfahrungspunkte des Spielers.
+ * @returns level: Aktuelles Level
+ *          currentXp: xp im aktuellen Level
+ *          maxXp: xp benötigt für das gesamte Level
+ *          progressPercent: Prozentualer Fortschritt im aktuellen Level
+ * @example
+ * const info = getLevelInfoFromXp(900);
+ * // info = { level: 8, currentXp: 97, maxXp: 167, progressPercent: 58.08 }
+ */
+export function getLevelFromXp(xp: number){
   const levels = {
     "1": { "total_xp": 0 },
     "2": { "total_xp": 83 },
@@ -100,25 +112,42 @@ export function getLevelFromXp(xp: number): number {
     "98": { "total_xp": 11805616 },
     "99": { "total_xp": 13034441 },
   };
+
   const levelStrings = Object.keys(levels).sort((a, b) => parseInt(a) - parseInt(b));
-
   let resultLevel = 1;
+  let currentXp = 0;
+  let maxXp = 0;
+  let progressPercent = 0;
 
-  if (xp < levels[levelStrings[0] as keyof typeof levels].total_xp) {
-    resultLevel = 1;
-  } else {
-    for (const levelString of levelStrings) {
-      if (xp <= levels[levelString as keyof typeof levels].total_xp) {
-        resultLevel = parseInt(levelString);
-        break;
-      }
+  for (let i = 0; i < levelStrings.length; i++) {
+    const currentLevel = parseInt(levelStrings[i]);
+    const currentLevelXp = levels[levelStrings[i] as keyof typeof levels].total_xp;
+    const nextLevelXp = i + 1 < levelStrings.length
+      ? levels[levelStrings[i + 1] as keyof typeof levels].total_xp
+      : Infinity;
+
+    if (xp >= currentLevelXp && xp < nextLevelXp) {
+      resultLevel = currentLevel;
+      currentXp = xp - currentLevelXp;
+      maxXp = nextLevelXp - currentLevelXp;
+      progressPercent = maxXp > 0 ? (currentXp / maxXp) * 100 : 100;
+      break;
     }
-    if (xp > levels[levelStrings[levelStrings.length - 1] as keyof typeof levels].total_xp) {
-      resultLevel = parseInt(levelStrings[levelStrings.length - 1] as keyof typeof levels);
+
+    if (i === levelStrings.length - 1 && xp >= currentLevelXp) {
+      resultLevel = currentLevel;
+      currentXp = xp - currentLevelXp;
+      maxXp = 0;
+      progressPercent = 100;
     }
   }
 
-  return resultLevel;
+  return {
+    level: resultLevel,
+    currentXp,
+    maxXp,
+    progressPercent
+  };
 }
 
 
