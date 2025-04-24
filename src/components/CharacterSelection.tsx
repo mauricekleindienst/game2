@@ -233,18 +233,10 @@ export default function CharacterSelection({ onCharacterSelect, characters = [] 
     setCharacterColor(color);
     setCharacterThemeColor(themeColor);
     
-    if (editingCharacter && selectedCharacter === editingCharacter.id) {
-      const previewTheme = {
-        ...themes.find(t => t.color === themeColor) || themes[0],
-        bgColor: color
-      };
-      
-      setTheme(previewTheme.id);
-      
-      if (onCharacterSelect) {
-        onCharacterSelect({id: editingCharacter.id, color: themeColor});
-      }
-    }
+    // If editing the currently selected character...
+    // REMOVED: Immediate theme update logic was here.
+    // The preview is handled by getCharacterToRender, 
+    // and the final update happens in handleSaveChanges.
   };
   
   const handleSaveChanges = async () => {
