@@ -17,6 +17,7 @@ import MiningCave from '@/components/MiningCave';
 import Farmland from '@/components/Farmland';
 import LoadingScreen from '@/components/LoadingScreen';
 import CharacterLevelInfo from '@/components/CharacterLevelInfo';
+import CookingHut from '@/components/CookingHut';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function GamePage() {
@@ -305,7 +306,7 @@ export default function GamePage() {
     );
   }
 
-  const navHeightPadding = 'pt-35';
+  const navHeightPadding = 'pt-20'; // Adjusted for better spacing
   const charSelectHeightPadding = 'pb-28';
 
   return (
@@ -320,20 +321,21 @@ export default function GamePage() {
         />
       </div>
 
-      <GameNav 
-        selectedLocationId={selectedLocation?.id}
-        onLocationSelect={handleLocationSelect}
-        activeThemeColor={activeThemeColor}
-      />
+      <div className="relative z-10">
+        <GameNav 
+          selectedLocationId={selectedLocation?.id}
+          onLocationSelect={handleLocationSelect}
+          activeThemeColor={activeThemeColor}
+        />
+      </div>
 
-      <div className="flex flex-row h-full relative z-10">
+      <div className="flex flex-row h-full relative z-5">
         {/* Fixed-positioned sidebar that doesn't affect layout flow */}
         <div className="hidden md:block h-full" style={{ width: sidebarCollapsed ? '5rem' : '20rem', flexShrink: 0 }}>
           {/* This is just a spacer div that reserves the space in the layout */}
         </div>
         
-        {/* Absolutely positioned sidebar that overlays without affecting flow - now centered vertically */}
-        <div className="hidden md:flex fixed top-0 left-0 h-full z-30 items-center pl-6">
+        <div className="hidden md:flex fixed top-0 left-0 h-full z-20 items-center pl-6">
           {characterLevelInfoProps && (
             <CharacterLevelInfo
               {...characterLevelInfoProps}
@@ -343,16 +345,18 @@ export default function GamePage() {
           )}
         </div>
         
-        {/* Main content: no margin-left, always properly centered */}
-        <div className="flex-1 flex items-center justify-center overflow-y-auto">
-          <div className={`relative ${navHeightPadding} ${charSelectHeightPadding} w-full`}> 
+        <div className="flex-1 flex items-center justify-center">
+          <div className={`relative ${navHeightPadding} ${charSelectHeightPadding} w-full max-w-5xl mx-auto px-4`}> 
             {selectedLocation ? (
-              <div className="px-4">
+              <>
                 <div className={selectedLocation.id === 0 ? 'block' : 'hidden'}>
                   <FishingDock />
                 </div>
                 <div className={selectedLocation.id === 1 ? 'block' : 'hidden'}>
                   <WoodcuttersGrove />
+                </div>
+                <div className={selectedLocation.id === 2 ? 'block' : 'hidden'}>
+                  <CookingHut />
                 </div>
                 <div className={selectedLocation.id === 3 ? 'block' : 'hidden'}>
                   <Farmland />
@@ -360,7 +364,13 @@ export default function GamePage() {
                 <div className={selectedLocation.id === 4 ? 'block' : 'hidden'}>
                   <MiningCave />
                 </div>
-              </div>
+                {![0, 1, 2, 3, 4].includes(selectedLocation.id) && (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <h2 className="text-2xl text-white mb-4">Coming Soon</h2>
+                    <p className="text-gray-300">This location is under development</p>
+                  </div>
+                )}
+              </>
             ) : (
               <Map 
                 selectedLocation={selectedLocation}
@@ -372,14 +382,18 @@ export default function GamePage() {
         </div>
       </div>
 
-      <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 z-40 flex justify-center">
+      {/* Inventory - fixed at bottom with space for character selection */}
+      <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 z-30">
         <Inventory />
       </div>
 
-      <CharacterSelection 
-        onCharacterSelect={handleCharacterSelect} 
-        characters={characters}
-      />
+      {/* Character selection - fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 z-40">
+        <CharacterSelection 
+          onCharacterSelect={handleCharacterSelect} 
+          characters={characters}
+        />
+      </div>
 
       <BackgroundMusic />
       <WelcomeModal isOpen={showWelcome} onClose={handleCloseWelcome} />

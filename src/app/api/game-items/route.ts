@@ -5,12 +5,15 @@ import { woodHandler } from '@/lib/wood';
 import { oreHandler } from '@/lib/ores';
 import { cropHandler } from '@/lib/crops';
 import { ItemHandler, GameItem } from '@/lib/game-items';
+import { foodHandler, craftableFoodHandler } from '@/lib/food';
 
 const itemHandlers: Record<string, ItemHandler<GameItem>> = {
   'fish': fishHandler,
   'wood': woodHandler,
   'ore': oreHandler,
   'crop': cropHandler,
+  'food': foodHandler,
+  'craftable-food': craftableFoodHandler,
 };
 
 export async function GET(req: Request) {
@@ -52,4 +55,4 @@ export async function GET(req: Request) {
       { status: 500 }
     );
   }
-} 
+}
